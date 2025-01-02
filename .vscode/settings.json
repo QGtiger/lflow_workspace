@@ -39,8 +39,4 @@
     "source.fixAll.eslint": "explicit",
     "source.fixAll.stylelint": "explicit"
   },
-  "eslint.lintTask.options": "-c node_modules/.pnpm/@xybot+init-config@1.0.2/node_modules/@xybot/init-config/configs/.eslintrc.js  --ignore-path node_modules/.pnpm/@xybot+init-config@1.0.2/node_modules/@xybot/init-config/configs/.eslintignore",
-  "prettier.configPath": "node_modules/.pnpm/@xybot+init-config@1.0.2/node_modules/@xybot/init-config/configs/.prettierrc.js",
-  "prettier.ignorePath": "node_modules/.pnpm/@xybot+init-config@1.0.2/node_modules/@xybot/init-config/configs/.prettierignore",
-  "stylelint.configFile": "node_modules/.pnpm/@xybot+init-config@1.0.2/node_modules/@xybot/init-config/configs/.stylelintrc.js"
 }
