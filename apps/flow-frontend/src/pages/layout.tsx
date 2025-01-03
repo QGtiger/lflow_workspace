@@ -4,6 +4,8 @@ import { ConfigProvider, notification } from "antd";
 import { useEffect, useRef } from "react";
 import { useOutlet } from "react-router-dom";
 
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
 export default function Layout() {
   const outlet = useOutlet();
   const holderRef = useRef<HTMLDivElement>(null);
@@ -21,6 +23,7 @@ export default function Layout() {
         {outlet}
         <div ref={holderRef}>{notificationContextHolder}</div>
       </UserModel.Provider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </ConfigProvider>
   );
 }

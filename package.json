@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "dev:backend": "pnpm run -C apps/flow-backend start:dev",
+    "dev:frontend": "pnpm run -C apps/flow-frontend dev",
+    "dev": "pnpm run dev:backend && pnpm run dev:frontend"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
