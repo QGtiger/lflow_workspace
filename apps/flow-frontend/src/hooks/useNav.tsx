@@ -7,10 +7,7 @@ export default function useNav() {
   return {
     ...location,
     nav,
-    navEntry: () => nav("/console/manage"),
-    navChatBotDetail: (id: string | number) => nav(`/console/manage/${id}`),
-    navChatBotRecord: (id: string | number, name: string) =>
-      nav(`/console/chathistory?id=${id}&name=${name}`),
+    navEntry: () => nav("/console"),
     navByDelSearchParam(key: string, navOptions?: NavigateOptions) {
       const search = new URLSearchParams(location.search);
       search.delete(key);

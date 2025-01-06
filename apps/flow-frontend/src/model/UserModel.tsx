@@ -1,3 +1,4 @@
+import { request } from "@/api/request";
 import {
   getAccessToken,
   userLoginBySetToken,
@@ -19,13 +20,12 @@ export const UserModel = createCustomModel(() => {
       userLogoutByRemoveToken();
       return;
     }
-    alert("获取用户信息");
-    // request({
-    //   url: '/api/v1/user/info/rich',
-    //   method: 'get',
-    // }).then((res) => {
-    //   Object.assign(userViewModel, res.data);
-    // });
+    request({
+      url: "/user/info",
+      method: "get",
+    }).then((res) => {
+      Object.assign(userViewModel, res);
+    });
   }, [loginFlag]);
 
   return {
