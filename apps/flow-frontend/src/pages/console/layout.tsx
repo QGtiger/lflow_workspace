@@ -7,6 +7,9 @@ import { MoreOutlined, LogoutOutlined } from "@ant-design/icons";
 import useNav from "@/hooks/useNav";
 import { PropsWithChildren } from "react";
 import { AuthLoginLayout } from "@/components/layouts/AuthLogin";
+import Logo from "@/assets/logo.png";
+
+import "./layout.css";
 
 function UserDropDown(
   props: PropsWithChildren<{
@@ -64,6 +67,7 @@ export default function ConsoleLayout() {
         route={{
           routes: [],
         }}
+        logo={Logo}
         title="lflow"
         className="custom-pro-layout"
         appList={[

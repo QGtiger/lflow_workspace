@@ -26,7 +26,7 @@ export const UserModel = createCustomModel(() => {
     }).then((res) => {
       Object.assign(userViewModel, res);
     });
-  }, [loginFlag]);
+  }, [loginFlag, userViewModel]);
 
   return {
     userInfo: userViewModel,
