@@ -1,13 +1,26 @@
 import { Edge, Node } from "@xyflow/react";
 import { FlowBlock } from "./FlowBlock";
 import { RectInfer } from "./DisplayObject";
+import { FlowPathsBlock } from "./FlowPathsBlock";
+import { FlowPathRuleBlock } from "./FlowPathRuleBlock";
+import {
+  isPathRuleNode,
+  isPathsBlock,
+  isPathsNode,
+  traceAll,
+  traceBlock,
+} from "./utils";
 
 export class LayoutEngine {
   rootId?: string;
-  private flowBlockMap: Record<string, FlowBlock> = {};
+  flowBlockMap: Record<string, FlowBlock> = {};
+  viewWidthMap: Record<string, number> = {};
+  initialNodes: WorkflowNode[] = [];
 
   constructor(nodes: WorkflowNode[]) {
-    this.transferWrokflowNodeToFlowBlock({ nodes, startIndex: 0 });
+    this.rootId = nodes[0].id;
+    this.initialNodes = nodes;
+    this.transferWrokflowNodeToFlowBlock({ nodes });
   }
 
   resizeNode(id: string, size: RectInfer) {
@@ -24,17 +37,33 @@ export class LayoutEngine {
   }
 
   createFlowBlock(node: WorkflowNode, parentId?: string): FlowBlock {
-    const item = new FlowBlock(node);
-    this.flowBlockMap[node.id] = item;
+    let item: FlowBlock;
+    const { initialNodes } = this;
+    if (isPathsNode(node)) {
+      item = new FlowPathsBlock(node);
+      this.flowBlockMap[node.id] = item;
+      if (!node.children) {
+        throw new Error("Path 节点必须有 children");
+      } else {
+        node.children.forEach((child) => {
+          const childBlock = this.transferWrokflowNodeToFlowBlock({
+            nodes: initialNodes,
+            startId: child,
+          });
+          (item as FlowPathsBlock).addChild(childBlock);
+        });
+      }
+    } else if (isPathRuleNode(node)) {
+      item = new FlowPathRuleBlock(node);
+      this.flowBlockMap[node.id] = item;
+    } else {
+      item = new FlowBlock(node);
+      this.flowBlockMap[node.id] = item;
+    }
     if (parentId) {
       const parentBlock = this.getBlockByCheckNodeExist(parentId);
       parentBlock.setNext(item);
-    } else {
-      if (this.rootId !== node.id) {
-        throw new Error("创建节点必须添加至其他节点");
-      }
     }
-
     return item;
   }
 
@@ -51,14 +80,14 @@ export class LayoutEngine {
 
   transferWrokflowNodeToFlowBlock(opts: {
     nodes: WorkflowNode[];
-    startIndex?: number;
+    startId?: string;
   }) {
-    const { nodes, startIndex = 0 } = opts;
+    const { nodes, startId = this.rootId } = opts;
+    const startIndex = nodes.findIndex((node) => node.id === startId);
     let node: WorkflowNode | undefined = nodes[startIndex];
-    if (!node) {
-      throw new Error("获取首节点错误");
+    if (!node || !startId) {
+      throw new Error(`获取 transfer 首节点${startId}错误`);
     }
-    this.rootId = node.id;
 
     let parentBlock: FlowBlock | undefined;
 
@@ -72,84 +101,19 @@ export class LayoutEngine {
       parentBlock = block;
       node = node.next ? nodeMap[node.next] : undefined;
     }
-  }
 
-  private getNodeData(id: string): Node {
-    const block = this.flowBlockMap[id];
-    const parentBlock = block.parent;
-    return {
-      id,
-      data: { label: id, nodeData: this.flowBlockMap[id].flowNodeData },
-      parentId: parentBlock?.id,
-      position: {
-        x: parentBlock ? (parentBlock.w - block.w) / 2 : -block.w / 2,
-        y: parentBlock ? parentBlock.mb + parentBlock.h : 0,
-      },
-      type: "workflowNode",
-    };
-  }
-
-  exportReactFlowDataByFlowBlock(block?: FlowBlock): {
-    nodes: Node[];
-    edges: Edge[];
-  } {
-    if (!block) {
-      return {
-        nodes: [],
-        edges: [],
-      };
-    }
-    // 区分分支 循环
-    // const nodes: WorkflowNode[] = [];
-    // const edges: any[] = [];
-    // let blockId = block.id;
-    // while (blockId) {
-    //   const node = this.nodeMap[blockId];
-    //   if (!node) {
-    //     throw new Error(`node ${blockId} not found`);
-    //   }
-    //   nodes.push(node);
-    //   if (block.next) {
-    //     edges.push({
-    //       id: `${block.id}-${block.next.id}`,
-    //       source: block.id,
-    //       target: block.next.id,
-    //     });
-    //   }
-    //   blockId = block.next?.id;
-    // }
-
-    const nextBlockData = this.exportReactFlowDataByFlowBlock(block.next);
-    const nodes = Array.prototype.concat.call(
-      [],
-      this.getNodeData(block.id),
-      nextBlockData.nodes
-    );
-
-    const edges = Array.prototype.concat.call(
-      [],
-      (() => {
-        const nextNode = nextBlockData.nodes.at(0);
-        if (!nextNode) return [];
-        return {
-          id: `${block.id}-${nextNode.id}`,
-          source: block.id,
-          target: nextNode.id,
-        } as Edge;
-      })(),
-      nextBlockData.edges
-    );
-
-    return {
-      nodes,
-      edges,
-    };
+    return this.flowBlockMap[startId];
   }
 
   exportReactFlowData() {
     if (!this.rootId) {
       throw new Error("rootId is required");
     }
-    return this.exportReactFlowDataByFlowBlock(this.flowBlockMap[this.rootId!]);
+    const b = this.getBlockByCheckNodeExist(this.rootId);
+    traceAll(b, (block) => {
+      block.viewHeight = 0;
+      block.viewWidth = 0;
+    });
+    return b.exportReactFlowDataByFlowBlock();
   }
 }

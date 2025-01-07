@@ -22,6 +22,7 @@ const WorkflowNode = (props: NodeProps<BuiltInNode>) => {
     if (!id) return;
     const { offsetWidth, offsetHeight } = entry.target as HTMLDivElement;
     if (!offsetWidth || !offsetHeight) return;
+    console.log("nodeResize", id, offsetWidth, offsetHeight);
     nodeResize(id, {
       w: offsetWidth,
       h: offsetHeight,
@@ -32,7 +33,6 @@ const WorkflowNode = (props: NodeProps<BuiltInNode>) => {
     <div
       ref={nodeRef}
       onClick={() => {
-        console.log("clicked", props);
         if (window["test"]) {
           return del(id);
         }

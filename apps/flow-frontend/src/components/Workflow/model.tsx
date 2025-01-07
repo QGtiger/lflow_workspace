@@ -26,7 +26,7 @@ export interface LFStoreConfig {
 export function createLFStore(config: LFStoreConfig) {
   const engineIns = new LayoutEngine(config.flowNodes);
   const data = engineIns.exportReactFlowData();
-  console.log(data);
+  console.log(data, engineIns.flowBlockMap[engineIns.rootId!]);
   const store = createStore<LFStoreState>((set) => {
     function setNodesEdges() {
       const data = engineIns.exportReactFlowData();
@@ -43,6 +43,7 @@ export function createLFStore(config: LFStoreConfig) {
       edges: data.edges,
       nodeResize(id, size) {
         engineIns.resizeNode(id, size);
+        console.log("resize");
         render();
       },
       addNewNode(parentId: string, nodeData?: WorkflowNode) {
@@ -52,10 +53,12 @@ export function createLFStore(config: LFStoreConfig) {
           },
           parentId
         );
+        console.log("add");
         render();
       },
       deleteNode(id) {
         engineIns.deleteFlowBlock(id);
+        console.log("del");
         render();
       },
       changeNodeData(id, data) {

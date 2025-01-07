@@ -95,9 +95,9 @@ export default () => {
   return (
     <div className=" relative w-full h-full">
       <ReactFlowWrapper />
-      <div className=" absolute w-[300px] h-[500px] top-0">
+      {/* <div className=" absolute w-[300px] h-[500px] top-0">
         <ReactFlowWrapper />
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -10,6 +10,8 @@ const WorkflowNode = ({ id, data }: NodeProps<BuiltInNode>) => {
   // calling onClick adds a child node to this node
   const onClick = useNodeClickHandler(id);
 
+  console.log("render", id);
+
   return (
     <div
       onClick={onClick}
