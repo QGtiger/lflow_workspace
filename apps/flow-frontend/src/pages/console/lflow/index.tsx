@@ -5,7 +5,7 @@ export default function Lflow() {
     <Workflow
       flowNodes={[
         {
-          id: "12222222222222222222222222222222",
+          id: "1",
           next: "2",
           connectorCode: "Path",
           children: ["1-1", "1-2", "1-3"],
@@ -21,22 +21,22 @@ export default function Lflow() {
         {
           id: "1-2",
           connectorCode: "PathRule",
-          next: "1-2-1",
+          // next: "1-2-1",
         },
 
-        {
-          id: "1-2-1",
-          connectorCode: "Path",
-          children: ["1-2-1-1", "1-2-1-2"],
-        },
-        {
-          id: "1-2-1-1",
-          connectorCode: "PathRule",
-        },
-        {
-          id: "1-2-1-2",
-          connectorCode: "PathRule",
-        },
+        // {
+        //   id: "1-2-1",
+        //   connectorCode: "Path",
+        //   children: ["1-2-1-1", "1-2-1-2"],
+        // },
+        // {
+        //   id: "1-2-1-1",
+        //   connectorCode: "PathRule",
+        // },
+        // {
+        //   id: "1-2-1-2",
+        //   connectorCode: "PathRule",
+        // },
         {
           id: "2",
           next: "3",

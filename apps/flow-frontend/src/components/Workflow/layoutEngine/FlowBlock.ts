@@ -1,6 +1,6 @@
 import { Edge, Node } from "@xyflow/react";
 import { DisplayObject } from "./DisplayObject";
-import { isPathRuleBlock, isPathsBlock } from "./utils";
+import { isPathRuleBlock, isPathsBlock, ReactFlowData } from "./utils";
 
 export class FlowBlock extends DisplayObject {
   next?: FlowBlock;
@@ -85,18 +85,17 @@ export class FlowBlock extends DisplayObject {
     };
   }
 
-  exportReactFlowDataByFlowBlock(): {
-    nodes: Node[];
-    edges: Edge[];
-  } {
+  exportReactFlowDataByFlowBlock(): ReactFlowData {
+    const currNode = this.getNodeData();
     const nextBlockData = this.next?.exportReactFlowDataByFlowBlock() || {
       nodes: [],
       edges: [],
+      endNode: currNode,
     };
 
     const nodes = Array.prototype.concat.call(
       [],
-      this.getNodeData(),
+      currNode,
       nextBlockData.nodes
     );
 
@@ -117,6 +116,7 @@ export class FlowBlock extends DisplayObject {
     return {
       nodes,
       edges,
+      endNode: nextBlockData.endNode,
     };
   }
 }

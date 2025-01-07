@@ -1,5 +1,8 @@
+import { Edge, Node } from "@xyflow/react";
 import type { FlowBlock } from "./FlowBlock";
 import type { FlowPathsBlock } from "./FlowPathsBlock";
+
+export type ReactFlowData = { nodes: Node[]; edges: Edge[]; endNode: Node };
 
 export const uuid = (): string =>
   new Date().getTime().toString(36) + Math.random().toString(36).slice(2);

@@ -36,7 +36,6 @@ export class FlowPathRuleBlock extends FlowBlock {
     // 需要先计算一下父节点的宽度，才能拿到自己的位置
     parent.queryViewWidth();
     const vw = parent.childrenViewWidth;
-    console.log(vw);
     let w = (parent.w - vw) / 2;
 
     const index = parent.children.indexOf(this);

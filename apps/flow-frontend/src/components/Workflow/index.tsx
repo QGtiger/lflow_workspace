@@ -3,6 +3,7 @@ import { useRef } from "react";
 import nodeTypes from "./NodeTypes";
 import { createLFStore, LFStore, LFStoreConfig, StoreContext } from "./model";
 import useLFStoreState from "./hooks/useLFStoreState";
+import edgeTypes from "./EdgeTypes";
 
 function WorkflowWrapper() {
   const { nodes, edges } = useLFStoreState();
@@ -13,6 +14,7 @@ function WorkflowWrapper() {
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         minZoom={0.2}
         // nodesDraggable={false}
         nodesConnectable={false}

@@ -1,8 +1,7 @@
-import { Node, Edge } from "@xyflow/react";
+import { Node } from "@xyflow/react";
 import { FlowBlock } from "./FlowBlock";
 import { FlowPathRuleBlock } from "./FlowPathRuleBlock";
-
-type ReactFlowData = { nodes: Node[]; edges: Edge[] };
+import { ReactFlowData } from "./utils";
 
 export class FlowPathsBlock extends FlowBlock {
   children: FlowBlock[] = [];
@@ -49,30 +48,121 @@ export class FlowPathsBlock extends FlowBlock {
     return vw;
   }
 
+  generateEndNode(): Node {
+    const lw = 100;
+    return {
+      id: `${this.id}-end`,
+      data: { label: "end", nodeData: this.flowNodeData },
+      parentId: this.id,
+      position: {
+        x: (this.w - lw) / 2,
+        y: this.queryViewHeight(),
+      },
+      style: {
+        width: lw,
+        height: 1,
+        visibility: "hidden",
+      },
+      type: "endflowNode",
+    };
+  }
+
   exportReactFlowDataByFlowBlock(): ReactFlowData {
     const childrenNodes = this.children.reduce(
       (acc, curr) => {
         const d = curr.exportReactFlowDataByFlowBlock();
         acc.nodes.push(...d.nodes);
         acc.edges.push(...d.edges);
+        acc.startNodes.push(d.nodes[0]);
+        acc.endNodes.push(d.endNode);
         return acc;
       },
       {
         nodes: [],
         edges: [],
-      } as ReactFlowData
+        startNodes: [],
+        endNodes: [],
+      } as {
+        nodes: ReactFlowData["nodes"];
+        edges: ReactFlowData["edges"];
+        startNodes: ReactFlowData["nodes"];
+        endNodes: ReactFlowData["nodes"];
+      }
     );
 
-    const dd = super.exportReactFlowDataByFlowBlock();
+    const endNode = this.generateEndNode();
+
+    const nextBlockData = this.next?.exportReactFlowDataByFlowBlock() || {
+      nodes: [],
+      edges: [],
+    };
 
     const nodes = Array.prototype.concat.call(
       [],
-      dd.nodes,
-      childrenNodes.nodes
+      this.getNodeData(),
+      childrenNodes.nodes,
+      endNode,
+      nextBlockData.nodes
     );
 
-    const edges = Array.prototype.concat.call([], dd.edges);
+    console.log(
+      childrenNodes.endNodes.map((node) => {
+        return {
+          id: `${node.id}-${endNode.id}`,
+          source: node.id,
+          target: endNode.id,
+        };
+      })
+    );
 
-    return { nodes, edges };
+    const edges = Array.prototype.concat.call(
+      [],
+      (() => {
+        return childrenNodes.startNodes.map((node) => {
+          return {
+            id: `${this.id}-${node.id}`,
+            source: this.id,
+            target: node.id,
+          };
+        });
+      })(),
+      childrenNodes.edges,
+      (() => {
+        return childrenNodes.endNodes.map((node) => {
+          return {
+            id: `${node.id}-${endNode.id}`,
+            source: node.id,
+            target: endNode.id,
+            type: "endflowEdge",
+          };
+        });
+      })(),
+      (() => {
+        const nextNode = nextBlockData.nodes.at(0);
+        if (!nextNode) return [];
+        return {
+          id: `${endNode.id}-${nextNode.id}`,
+          source: endNode.id,
+          target: nextNode.id,
+        };
+      })(),
+      nextBlockData.edges
+    );
+
+    // const dd = super.exportReactFlowDataByFlowBlock();
+
+    // const nodes = Array.prototype.concat.call(
+    //   [],
+    //   dd.nodes,
+    //   childrenNodes.nodes
+    // );
+
+    // const edges = Array.prototype.concat.call(
+    //   [],
+    //   dd.edges,
+    //   childrenNodes.edges
+    // );
+
+    return { nodes, edges, endNode };
   }
 }
