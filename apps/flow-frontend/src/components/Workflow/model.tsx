@@ -13,6 +13,8 @@ interface LFStoreState {
   addNewNode(parentId: string, nodeData?: WorkflowNode): void;
   deleteNode(id: string): void;
   changeNodeData(id: string, data: Omit<WorkflowNode, "id">): void;
+  layoutEngine: LayoutEngine;
+  rerender(): void;
 }
 
 export type LFStore = ReturnType<typeof createLFStore>;
@@ -39,6 +41,8 @@ export function createLFStore(config: LFStoreConfig) {
     }
 
     return {
+      rerender: render,
+      layoutEngine: engineIns,
       nodes: data.nodes,
       edges: data.edges,
       nodeResize(id, size) {

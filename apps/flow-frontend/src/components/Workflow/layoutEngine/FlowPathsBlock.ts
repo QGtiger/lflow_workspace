@@ -1,7 +1,7 @@
-import { Node } from "@xyflow/react";
+import { Edge, Node } from "@xyflow/react";
 import { FlowBlock } from "./FlowBlock";
 import { FlowPathRuleBlock } from "./FlowPathRuleBlock";
-import { ReactFlowData } from "./utils";
+import { generateEdge, ReactFlowData } from "./utils";
 
 export class FlowPathsBlock extends FlowBlock {
   children: FlowBlock[] = [];
@@ -119,32 +119,30 @@ export class FlowPathsBlock extends FlowBlock {
       [],
       (() => {
         return childrenNodes.startNodes.map((node) => {
-          return {
-            id: `${this.id}-${node.id}`,
-            source: this.id,
-            target: node.id,
-          };
+          return generateEdge({
+            sourceNode: this,
+            targetNode: node,
+            type: "pathsEdge",
+          });
         });
       })(),
       childrenNodes.edges,
       (() => {
         return childrenNodes.endNodes.map((node) => {
-          return {
-            id: `${node.id}-${endNode.id}`,
-            source: node.id,
-            target: endNode.id,
+          return generateEdge({
+            sourceNode: node,
+            targetNode: endNode,
             type: "endflowEdge",
-          };
+          });
         });
       })(),
       (() => {
         const nextNode = nextBlockData.nodes.at(0);
         if (!nextNode) return [];
-        return {
-          id: `${endNode.id}-${nextNode.id}`,
-          source: endNode.id,
-          target: nextNode.id,
-        };
+        return generateEdge({
+          sourceNode: endNode,
+          targetNode: nextNode,
+        });
       })(),
       nextBlockData.edges
     );

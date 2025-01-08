@@ -44,3 +44,21 @@ export function isPathsBlock(block: FlowBlock) {
   if (!block) return false;
   return isPathsNode(block.flowNodeData);
 }
+
+export function generateEdge(config: {
+  sourceNode: { id: string };
+  targetNode: { id: string };
+  type?: string;
+}) {
+  const { sourceNode, targetNode, type } = config;
+  return {
+    id: `${sourceNode.id}-${targetNode.id}`,
+    source: sourceNode.id,
+    target: targetNode.id,
+    type: type,
+    data: {
+      sourceId: sourceNode.id,
+      targetId: targetNode.id,
+    },
+  };
+}

@@ -36,12 +36,11 @@ export class LayoutEngine {
     return block;
   }
 
-  createFlowBlock(node: WorkflowNode, parentId?: string): FlowBlock {
+  generateBlock(node: WorkflowNode) {
     let item: FlowBlock;
     const { initialNodes } = this;
     if (isPathsNode(node)) {
-      item = new FlowPathsBlock(node);
-      this.flowBlockMap[node.id] = item;
+      this.flowBlockMap[node.id] = item = new FlowPathsBlock(node);
       if (!node.children) {
         throw new Error("Path 节点必须有 children");
       } else {
@@ -54,12 +53,16 @@ export class LayoutEngine {
         });
       }
     } else if (isPathRuleNode(node)) {
-      item = new FlowPathRuleBlock(node);
-      this.flowBlockMap[node.id] = item;
+      this.flowBlockMap[node.id] = item = new FlowPathRuleBlock(node);
     } else {
-      item = new FlowBlock(node);
-      this.flowBlockMap[node.id] = item;
+      this.flowBlockMap[node.id] = item = new FlowBlock(node);
     }
+
+    return item;
+  }
+
+  createFlowBlock(node: WorkflowNode, parentId?: string): FlowBlock {
+    const item = this.generateBlock(node);
     if (parentId) {
       const parentBlock = this.getBlockByCheckNodeExist(parentId);
       parentBlock.setNext(item);
