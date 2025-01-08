@@ -1,8 +1,16 @@
-import { Edge, Node } from "@xyflow/react";
+import { Edge, EdgeProps, Node } from "@xyflow/react";
 import type { FlowBlock } from "./FlowBlock";
 import type { FlowPathsBlock } from "./FlowPathsBlock";
 
-export type ReactFlowData = { nodes: Node[]; edges: Edge[]; endNode: Node };
+export type EndNode = Node & { realParentId: string };
+
+export type ReactFlowData = {
+  nodes: Node[];
+  edges: WflowEdge[];
+  endNode: EndNode;
+};
+export type WflowEdge = Edge & { data: { parentId: string } };
+export type WflowEdgeProps = EdgeProps & { data: { parentId: string } };
 
 export const uuid = (): string =>
   new Date().getTime().toString(36) + Math.random().toString(36).slice(2);
@@ -49,16 +57,15 @@ export function generateEdge(config: {
   sourceNode: { id: string };
   targetNode: { id: string };
   type?: string;
-}) {
+}): WflowEdge {
   const { sourceNode, targetNode, type } = config;
   return {
     id: `${sourceNode.id}-${targetNode.id}`,
     source: sourceNode.id,
     target: targetNode.id,
-    type: type,
+    type: type || "stepflowEdge",
     data: {
-      sourceId: sourceNode.id,
-      targetId: targetNode.id,
+      parentId: (sourceNode as any).realParentId || sourceNode.id,
     },
   };
 }

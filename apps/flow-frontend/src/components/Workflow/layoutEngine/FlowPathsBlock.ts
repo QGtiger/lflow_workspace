@@ -1,11 +1,11 @@
-import { Edge, Node } from "@xyflow/react";
+import { Node } from "@xyflow/react";
 import { FlowBlock } from "./FlowBlock";
 import { FlowPathRuleBlock } from "./FlowPathRuleBlock";
-import { generateEdge, ReactFlowData } from "./utils";
+import { EndNode, generateEdge, ReactFlowData } from "./utils";
 
 export class FlowPathsBlock extends FlowBlock {
   children: FlowBlock[] = [];
-  innerMb: number = 40;
+  innerMb: number = 50;
   oy: number = 30;
   childrenViewWidth: number = 0;
 
@@ -48,7 +48,7 @@ export class FlowPathsBlock extends FlowBlock {
     return vw;
   }
 
-  generateEndNode(): Node {
+  generateEndNode(): EndNode {
     const lw = 100;
     return {
       id: `${this.id}-end`,
@@ -64,6 +64,7 @@ export class FlowPathsBlock extends FlowBlock {
         visibility: "hidden",
       },
       type: "endflowNode",
+      realParentId: this.id,
     };
   }
 
@@ -95,6 +96,7 @@ export class FlowPathsBlock extends FlowBlock {
     const nextBlockData = this.next?.exportReactFlowDataByFlowBlock() || {
       nodes: [],
       edges: [],
+      endNode,
     };
 
     const nodes = Array.prototype.concat.call(
@@ -103,16 +105,6 @@ export class FlowPathsBlock extends FlowBlock {
       childrenNodes.nodes,
       endNode,
       nextBlockData.nodes
-    );
-
-    console.log(
-      childrenNodes.endNodes.map((node) => {
-        return {
-          id: `${node.id}-${endNode.id}`,
-          source: node.id,
-          target: endNode.id,
-        };
-      })
     );
 
     const edges = Array.prototype.concat.call(
@@ -147,20 +139,6 @@ export class FlowPathsBlock extends FlowBlock {
       nextBlockData.edges
     );
 
-    // const dd = super.exportReactFlowDataByFlowBlock();
-
-    // const nodes = Array.prototype.concat.call(
-    //   [],
-    //   dd.nodes,
-    //   childrenNodes.nodes
-    // );
-
-    // const edges = Array.prototype.concat.call(
-    //   [],
-    //   dd.edges,
-    //   childrenNodes.edges
-    // );
-
-    return { nodes, edges, endNode };
+    return { nodes, edges, endNode: nextBlockData.endNode };
   }
 }

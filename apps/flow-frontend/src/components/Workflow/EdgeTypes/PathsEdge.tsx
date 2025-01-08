@@ -14,7 +14,7 @@ function getCustomSmoothStepPath(config: {
   const sweepFlag = sourceX > targetX ? 1 : 0;
 
   const labelX = sourceX;
-  const labelY = sourceY + 10; //;
+  const labelY = sourceY + 13; //;
 
   if (Math.abs(sourceX - targetX) < 2 * radius) {
     return [`M ${sourceX} ${sourceY} L ${targetX} ${targetY}`, labelX, labelY];
@@ -47,7 +47,7 @@ export function PathsEdge(props: EdgeProps) {
 
   return (
     <>
-      <BaseEdge path={edgePath} markerEnd={markerEnd} />(
+      <BaseEdge path={edgePath} markerEnd={markerEnd} />
       <EdgeLabelRenderer>
         <div
           className=" absolute pointer-events-auto"
@@ -57,16 +57,15 @@ export function PathsEdge(props: EdgeProps) {
           }}
         >
           <div
-            className=" cursor-pointer text-xs"
+            className=" cursor-pointer text-xs bg-white border border-solid border-gray-400 rounded-md"
             onClick={() => {
               addPath(source);
             }}
           >
-            +
+            +分支
           </div>
         </div>
       </EdgeLabelRenderer>
-      )
     </>
   );
 }

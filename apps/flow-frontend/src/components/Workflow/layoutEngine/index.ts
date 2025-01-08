@@ -1,4 +1,3 @@
-import { Edge, Node } from "@xyflow/react";
 import { FlowBlock } from "./FlowBlock";
 import { RectInfer } from "./DisplayObject";
 import { FlowPathsBlock } from "./FlowPathsBlock";

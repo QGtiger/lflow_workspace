@@ -1,6 +1,11 @@
-import { Edge, Node } from "@xyflow/react";
+import { Node } from "@xyflow/react";
 import { DisplayObject } from "./DisplayObject";
-import { isPathRuleBlock, isPathsBlock, ReactFlowData } from "./utils";
+import {
+  generateEdge,
+  isPathRuleBlock,
+  isPathsBlock,
+  ReactFlowData,
+} from "./utils";
 
 export class FlowBlock extends DisplayObject {
   next?: FlowBlock;
@@ -104,11 +109,10 @@ export class FlowBlock extends DisplayObject {
       (() => {
         const nextNode = nextBlockData.nodes.at(0);
         if (!nextNode) return [];
-        return {
-          id: `${this.id}-${nextNode.id}`,
-          source: this.id,
-          target: nextNode.id,
-        } as Edge;
+        return generateEdge({
+          sourceNode: this,
+          targetNode: nextNode,
+        });
       })(),
       nextBlockData.edges
     );

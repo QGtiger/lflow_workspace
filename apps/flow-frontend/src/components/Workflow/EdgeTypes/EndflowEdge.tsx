@@ -5,6 +5,8 @@ import {
   XYPosition,
   useReactFlow,
 } from "@xyflow/react";
+import useNewNode from "../hooks/useNewNode";
+import { WflowEdgeProps } from "../layoutEngine/utils";
 
 function getNodeEdgePoint(node: Node, x: number, y: number): XYPosition {
   const { type, position, width, height } = node;
@@ -66,12 +68,21 @@ function customStepLine(point1: XYPosition, point2: XYPosition) {
   }
 }
 
-export function EndflowEdge(props: any) {
-  const { sourceX, sourceY, targetX, targetY, markerEnd, source, target } =
-    props;
+export function EndflowEdge(props: WflowEdgeProps) {
+  const {
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    markerEnd,
+    source,
+    target,
+    data,
+  } = props;
   const { getNode } = useReactFlow();
   const sourceNode = getNode(source);
   const targetNode = getNode(target);
+  const addNode = useNewNode();
 
   if (!sourceNode || !targetNode) {
     return <></>;
@@ -82,5 +93,29 @@ export function EndflowEdge(props: any) {
 
   const edgePath2 = customStepLine(sourcePosition, targetPosition);
 
-  return <BaseEdge path={edgePath2} markerEnd={markerEnd} />;
+  return (
+    <>
+      <BaseEdge path={edgePath2} markerEnd={markerEnd} />
+      <EdgeLabelRenderer>
+        <div
+          className=" absolute pointer-events-auto"
+          style={{
+            transform: `translate(-50%, -50%) translate(${sourceX}px,${
+              sourceY + 15
+            }px)`,
+            transformOrigin: "center",
+          }}
+        >
+          <div
+            className=" cursor-pointer text-xs bg-white border border-solid border-gray-400 rounded-md"
+            onClick={() => {
+              addNode(data.parentId);
+            }}
+          >
+            +
+          </div>
+        </div>
+      </EdgeLabelRenderer>
+    </>
+  );
 }
