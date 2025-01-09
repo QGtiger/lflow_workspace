@@ -1,10 +1,35 @@
 import Workflow from "@/components/Workflow";
+import { PathRuleCode } from "@/components/Workflow/hooks/useAddPathRule";
 
 export default function Lflow() {
   return (
     <div className=" relative h-full w-full">
       <Workflow
         flowNodes={[
+          // {
+          //   id: "Loop",
+          //   connectorCode: "Loop",
+          //   children: ["Loop-1"],
+          //   next: "Loop.next",
+          // },
+          // {
+          //   id: "Loop-1",
+          //   connectorCode: "Path",
+          //   children: ["Loop-1.pathRule1", "Loop-1.pathRule2"],
+          // },
+          // {
+          //   id: "Loop-1.pathRule1",
+          //   connectorCode: PathRuleCode,
+          // },
+          // {
+          //   id: "Loop-1.pathRule2",
+          //   connectorCode: PathRuleCode,
+          // },
+
+          {
+            id: "root",
+            next: "1",
+          },
           {
             id: "1",
             next: "2",
@@ -13,15 +38,39 @@ export default function Lflow() {
           },
           {
             id: "1-1",
-            connectorCode: "PathRule",
+            connectorCode: PathRuleCode,
+            next: "Loop",
+          },
+          {
+            id: "Loop",
+            connectorCode: "Loop",
+            children: ["Loop-1"],
+            next: "Loop.next",
+          },
+          {
+            id: "Loop-1",
+            connectorCode: "Path",
+            children: ["Loop-1.pathRule1", "Loop-1.pathRule2"],
+          },
+          {
+            id: "Loop-1.pathRule1",
+            connectorCode: PathRuleCode,
+          },
+          {
+            id: "Loop-1.pathRule2",
+            connectorCode: PathRuleCode,
+          },
+
+          {
+            id: "Loop.next",
           },
           {
             id: "1-3",
-            connectorCode: "PathRule",
+            connectorCode: PathRuleCode,
           },
           {
             id: "1-2",
-            connectorCode: "PathRule",
+            connectorCode: PathRuleCode,
             next: "1-2-1",
           },
 
@@ -32,11 +81,11 @@ export default function Lflow() {
           },
           {
             id: "1-2-1-1",
-            connectorCode: "PathRule",
+            connectorCode: PathRuleCode,
           },
           {
             id: "1-2-1-2",
-            connectorCode: "PathRule",
+            connectorCode: PathRuleCode,
           },
           {
             id: "2",
@@ -47,7 +96,7 @@ export default function Lflow() {
           },
         ]}
       />
-      <div className=" absolute w-[300px] h-[500px] top-0">
+      {/* <div className=" absolute w-[300px] h-[500px] top-0">
         <Workflow
           flowNodes={[
             {
@@ -58,15 +107,15 @@ export default function Lflow() {
             },
             {
               id: "1-1",
-              connectorCode: "PathRule",
+              connectorCode: PathRuleCode,
             },
             {
               id: "1-3",
-              connectorCode: "PathRule",
+              connectorCode: PathRuleCode,
             },
             {
               id: "1-2",
-              connectorCode: "PathRule",
+              connectorCode: PathRuleCode,
               next: "1-2-1",
             },
 
@@ -77,11 +126,11 @@ export default function Lflow() {
             },
             {
               id: "1-2-1-1",
-              connectorCode: "PathRule",
+              connectorCode: PathRuleCode,
             },
             {
               id: "1-2-1-2",
-              connectorCode: "PathRule",
+              connectorCode: PathRuleCode,
             },
             {
               id: "2",
@@ -92,7 +141,7 @@ export default function Lflow() {
             },
           ]}
         />
-      </div>
+      </div> */}
     </div>
   );
 }

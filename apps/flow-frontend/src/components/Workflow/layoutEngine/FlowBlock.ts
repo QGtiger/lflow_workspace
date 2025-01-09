@@ -2,10 +2,12 @@ import { Node } from "@xyflow/react";
 import { DisplayObject } from "./DisplayObject";
 import {
   generateEdge,
+  isLoopBlock,
   isPathRuleBlock,
   isPathsBlock,
   ReactFlowData,
 } from "./utils";
+import type { FlowLoopBlock } from "./FlowLoopBlock";
 
 export class FlowBlock extends DisplayObject {
   next?: FlowBlock;
@@ -20,6 +22,14 @@ export class FlowBlock extends DisplayObject {
 
   constructor(public flowNodeData: WorkflowNode) {
     super();
+  }
+
+  setLastNext(block: FlowBlock) {
+    if (this.next) {
+      this.next.setLastNext(block);
+    } else {
+      this.setNext(block);
+    }
   }
 
   setNext(block?: FlowBlock) {
@@ -69,18 +79,24 @@ export class FlowBlock extends DisplayObject {
     return this.w;
   }
 
-  getNodeData(): Node {
+  getNodeData(opt?: { style?: Node["style"] }): Node {
     const { id, parent: parentBlock } = this;
     const ph = (() => {
       if (!parentBlock) return 0;
       if (isPathsBlock(parentBlock)) {
         return parentBlock.queryViewHeight();
       }
+      if (isLoopBlock(parentBlock)) {
+        if ((parentBlock as FlowLoopBlock).innerBlock === this) {
+          return parentBlock.h;
+        }
+        return parentBlock.queryViewHeight();
+      }
       return parentBlock.h;
     })();
     return {
       id: this.id,
-      data: { label: id, nodeData: this.flowNodeData },
+      data: { label: id, nodeData: this.flowNodeData, config: opt },
       parentId: parentBlock?.id,
       position: {
         x: parentBlock ? (parentBlock.w - this.w) / 2 : -this.w / 2,

@@ -1,8 +1,10 @@
-import { Edge, EdgeProps, Node } from "@xyflow/react";
+import { Edge, EdgeProps, Node, NodeProps } from "@xyflow/react";
 import type { FlowBlock } from "./FlowBlock";
 import type { FlowPathsBlock } from "./FlowPathsBlock";
+import { PathRuleCode } from "../hooks/useAddPathRule";
+import { LoopNodeCode } from "../hooks/useLoopNode";
 
-export type EndNode = Node & { realParentId: string };
+export type EndNode = Node & { realParentId?: string };
 
 export type ReactFlowData = {
   nodes: Node[];
@@ -11,6 +13,13 @@ export type ReactFlowData = {
 };
 export type WflowEdge = Edge & { data: { parentId: string } };
 export type WflowEdgeProps = EdgeProps & { data: { parentId: string } };
+export type WorkflowNodeProps = NodeProps & {
+  data: {
+    nodeData: WorkflowNode;
+    label: string;
+    [x: string]: any;
+  };
+};
 
 export const uuid = (): string =>
   new Date().getTime().toString(36) + Math.random().toString(36).slice(2);
@@ -32,12 +41,15 @@ export function traceAll(block: FlowBlock, cb: (b: FlowBlock) => void) {
         traceAll(child, cb);
       }
     }
+    if (isLoopBlock(currentBlock)) {
+      traceAll((currentBlock as any).innerBlock, cb);
+    }
     currentBlock = currentBlock.next;
   }
 }
 
 export function isPathRuleNode(node: WorkflowNode) {
-  return node.connectorCode === "PathRule";
+  return node.connectorCode === PathRuleCode;
 }
 
 export function isPathRuleBlock(block: FlowBlock) {
@@ -51,6 +63,14 @@ export function isPathsNode(node: WorkflowNode) {
 export function isPathsBlock(block: FlowBlock) {
   if (!block) return false;
   return isPathsNode(block.flowNodeData);
+}
+
+export function isLoopNode(node: WorkflowNode) {
+  return node.connectorCode === LoopNodeCode;
+}
+
+export function isLoopBlock(block: FlowBlock) {
+  return isLoopNode(block.flowNodeData);
 }
 
 export function generateEdge(config: {
@@ -69,3 +89,5 @@ export function generateEdge(config: {
     },
   };
 }
+
+export function generateNode(config: {}) {}

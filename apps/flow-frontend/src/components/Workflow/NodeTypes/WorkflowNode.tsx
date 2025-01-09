@@ -7,8 +7,9 @@ import { useResizeObserver } from "../layoutEngine/useResizeObserver";
 import useNodeResize from "../hooks/useNodeResize";
 import useNewNode from "../hooks/useNewNode";
 import useDelNode from "../hooks/useDelNode";
+import { WorkflowNodeProps } from "../layoutEngine/utils";
 
-const WorkflowNode = (props: NodeProps<BuiltInNode>) => {
+const WorkflowNode = (props: WorkflowNodeProps) => {
   // see the hook implementation for details of the click handler
   // calling onClick adds a child node to this node
   // const onClick = useNodeClickHandler(id);
@@ -17,12 +18,12 @@ const WorkflowNode = (props: NodeProps<BuiltInNode>) => {
   const nodeResize = useNodeResize();
   const add = useNewNode();
   const del = useDelNode();
+  console.log(props);
 
   useResizeObserver(nodeRef, (entry) => {
     if (!id) return;
     const { offsetWidth, offsetHeight } = entry.target as HTMLDivElement;
     if (!offsetWidth || !offsetHeight) return;
-    console.log("nodeResize", id, offsetWidth, offsetHeight);
     nodeResize(id, {
       w: offsetWidth,
       h: offsetHeight,

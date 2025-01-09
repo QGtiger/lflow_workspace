@@ -3,12 +3,14 @@ import { RectInfer } from "./DisplayObject";
 import { FlowPathsBlock } from "./FlowPathsBlock";
 import { FlowPathRuleBlock } from "./FlowPathRuleBlock";
 import {
+  isLoopNode,
   isPathRuleNode,
   isPathsBlock,
   isPathsNode,
   traceAll,
   traceBlock,
 } from "./utils";
+import { FlowLoopBlock } from "./FlowLoopBlock";
 
 export class LayoutEngine {
   rootId?: string;
@@ -38,7 +40,18 @@ export class LayoutEngine {
   generateBlock(node: WorkflowNode) {
     let item: FlowBlock;
     const { initialNodes } = this;
-    if (isPathsNode(node)) {
+    if (isLoopNode(node)) {
+      this.flowBlockMap[node.id] = item = new FlowLoopBlock(node);
+      if (!node.children?.length) {
+        throw new Error("Loop 节点必须有 children");
+      } else {
+        const childBlock = this.transferWrokflowNodeToFlowBlock({
+          nodes: initialNodes,
+          startId: node.children[0],
+        });
+        (item as FlowLoopBlock).setInnerBlock(childBlock);
+      }
+    } else if (isPathsNode(node)) {
       this.flowBlockMap[node.id] = item = new FlowPathsBlock(node);
       if (!node.children) {
         throw new Error("Path 节点必须有 children");
@@ -85,18 +98,18 @@ export class LayoutEngine {
     startId?: string;
   }) {
     const { nodes, startId = this.rootId } = opts;
-    const startIndex = nodes.findIndex((node) => node.id === startId);
-    let node: WorkflowNode | undefined = nodes[startIndex];
-    if (!node || !startId) {
-      throw new Error(`获取 transfer 首节点${startId}错误`);
-    }
-
-    let parentBlock: FlowBlock | undefined;
 
     const nodeMap: Record<string, WorkflowNode> = {};
     nodes.forEach((node) => {
       nodeMap[node.id] = node;
     });
+
+    let node: WorkflowNode | undefined = nodeMap[startId!];
+    if (!node || !startId) {
+      throw new Error(`获取 transfer 首节点${startId}错误`);
+    }
+
+    let parentBlock: FlowBlock | undefined;
 
     while (node) {
       const block = this.createFlowBlock(node, parentBlock?.id);
