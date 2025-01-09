@@ -1,12 +1,9 @@
-import { memo, useEffect, useRef } from "react";
-import { Handle, Position, NodeProps, BuiltInNode } from "@xyflow/react";
+import { memo, useRef, useState } from "react";
+import { Handle, Position } from "@xyflow/react";
 import cx from "classnames";
 
-import styles from "./NodeTypes.module.css";
 import { useResizeObserver } from "../layoutEngine/useResizeObserver";
 import useNodeResize from "../hooks/useNodeResize";
-import useNewNode from "../hooks/useNewNode";
-import useDelNode from "../hooks/useDelNode";
 import { WorkflowNodeProps } from "../layoutEngine/utils";
 
 const WorkflowNode = (props: WorkflowNodeProps) => {
@@ -16,9 +13,7 @@ const WorkflowNode = (props: WorkflowNodeProps) => {
   const { id, data } = props;
   const nodeRef = useRef<HTMLDivElement>(null);
   const nodeResize = useNodeResize();
-  const add = useNewNode();
-  const del = useDelNode();
-  console.log(props);
+  const [innerText, setInnerText] = useState(data.label);
 
   useResizeObserver(nodeRef, (entry) => {
     if (!id) return;
@@ -33,28 +28,15 @@ const WorkflowNode = (props: WorkflowNodeProps) => {
   return (
     <div
       ref={nodeRef}
-      onClick={() => {
-        if (window["test"]) {
-          return del(id);
-        }
-        add(id);
-      }}
-      className={cx(styles.node)}
+      className={cx("custom-node")}
       title="click to add a child node"
+      onClick={() => {
+        setInnerText(innerText + "1");
+      }}
     >
-      {data.label}
-      <Handle
-        className={styles.handle}
-        type="target"
-        position={Position.Top}
-        isConnectable={false}
-      />
-      <Handle
-        className={styles.handle}
-        type="source"
-        position={Position.Bottom}
-        isConnectable={false}
-      />
+      {innerText}
+      <Handle type="target" position={Position.Top} isConnectable={false} />
+      <Handle type="source" position={Position.Bottom} isConnectable={false} />
     </div>
   );
 };

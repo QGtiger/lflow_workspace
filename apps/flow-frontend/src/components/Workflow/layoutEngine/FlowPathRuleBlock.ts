@@ -52,6 +52,9 @@ export class FlowPathRuleBlock extends FlowBlock {
         y: parent ? parent.innerMb + parent.h : 0,
       },
       type: "workflowNode",
+      style: {
+        visibility: "visible",
+      },
     };
   }
 }

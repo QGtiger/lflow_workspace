@@ -79,7 +79,7 @@ export class FlowBlock extends DisplayObject {
     return this.w;
   }
 
-  getNodeData(opt?: { style?: Node["style"] }): Node {
+  getNodeData(opt?: { type?: string }): Node {
     const { id, parent: parentBlock } = this;
     const ph = (() => {
       if (!parentBlock) return 0;
@@ -96,13 +96,21 @@ export class FlowBlock extends DisplayObject {
     })();
     return {
       id: this.id,
-      data: { label: id, nodeData: this.flowNodeData, config: opt },
+      data: {
+        label: id,
+        nodeData: this.flowNodeData,
+        vh: this.queryViewHeight(),
+        vw: this.queryViewWidth(),
+      },
       parentId: parentBlock?.id,
       position: {
         x: parentBlock ? (parentBlock.w - this.w) / 2 : -this.w / 2,
         y: parentBlock ? parentBlock.mb + ph : 0,
       },
-      type: "workflowNode",
+      type: opt?.type || "workflowNode",
+      style: {
+        visibility: "visible",
+      },
     };
   }
 

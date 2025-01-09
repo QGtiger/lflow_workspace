@@ -17,6 +17,8 @@ export type WorkflowNodeProps = NodeProps & {
   data: {
     nodeData: WorkflowNode;
     label: string;
+    vw: number;
+    vh: number;
     [x: string]: any;
   };
 };
@@ -87,7 +89,8 @@ export function generateEdge(config: {
     data: {
       parentId: (sourceNode as any).realParentId || sourceNode.id,
     },
+    style: {
+      visibility: "visible",
+    },
   };
 }
-
-export function generateNode(config: {}) {}

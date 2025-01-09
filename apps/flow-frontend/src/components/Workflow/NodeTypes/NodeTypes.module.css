@@ -19,14 +19,6 @@
   );
 }
 
-.content {
-  pointer-events: none;
-}
-
-.handle {
-  visibility: hidden;
-}
-
 .placeholder {
   width: 160px;
   background: #fff;

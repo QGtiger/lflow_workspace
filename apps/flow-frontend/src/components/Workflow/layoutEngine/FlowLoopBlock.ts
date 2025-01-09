@@ -80,16 +80,8 @@ export class FlowLoopBlock extends FlowBlock {
 
     const innerChildNodes = this.innerBlock.exportReactFlowDataByFlowBlock();
 
-    console.log("========Loop=====", {
-      width: this.queryViewWidth(),
-      height: this.queryViewHeight(),
-    });
-
     const currNode = this.getNodeData({
-      style: {
-        width: this.queryViewWidth(),
-        height: this.queryViewHeight(),
-      },
+      type: "LoopNode",
     });
 
     const nextBlockData = this.next?.exportReactFlowDataByFlowBlock() || {
@@ -105,7 +97,6 @@ export class FlowLoopBlock extends FlowBlock {
       ...nextBlockData.nodes,
     ];
     const edges = [
-      // TODO 循环内线
       generateEdge({
         sourceNode: currNode,
         targetNode: innerChildNodes.nodes[0],

@@ -14,8 +14,8 @@ export default function useNodeResize() {
     const b = layoutEngine.getBlockByCheckNodeExist(id);
     if (isClose(b.w, size.w) && isClose(b.h, size.h)) return;
     if (!size.w || !size.h) return;
-    console.log("nodeResize", id, size, b, b.w, b.h);
     b.setRect(size);
+    console.log("nodeResize", id, size, b);
     rerender();
   }, []);
 

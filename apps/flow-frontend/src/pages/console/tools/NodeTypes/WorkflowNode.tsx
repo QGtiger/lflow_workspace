@@ -1,5 +1,11 @@
-import { memo } from "react";
-import { Handle, Position, NodeProps, BuiltInNode } from "@xyflow/react";
+import { memo, useState } from "react";
+import {
+  Handle,
+  Position,
+  NodeProps,
+  BuiltInNode,
+  useReactFlow,
+} from "@xyflow/react";
 import cx from "classnames";
 
 import styles from "./NodeTypes.module.css";
@@ -9,16 +15,22 @@ const WorkflowNode = ({ id, data }: NodeProps<BuiltInNode>) => {
   // see the hook implementation for details of the click handler
   // calling onClick adds a child node to this node
   const onClick = useNodeClickHandler(id);
+  const [innerText, setInnerText] = useState(data.label);
+  const { setNodes, getNodes } = useReactFlow();
 
   console.log("render", id);
 
   return (
     <div
-      onClick={onClick}
-      className={cx(styles.node)}
+      onClick={() => {
+        onClick();
+        // setInnerText(innerText + "1111111111");
+        // setNodes(JSON.parse(JSON.stringify(getNodes())));
+      }}
+      className={cx(styles.node, " break-words")}
       title="click to add a child node"
     >
-      {data.label}
+      {innerText}
       <Handle
         className={styles.handle}
         type="target"

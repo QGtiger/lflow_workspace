@@ -4,6 +4,7 @@ import { Edge, Node } from "@xyflow/react";
 import { queueEffectFn } from "./layoutEngine/queueTickFn";
 import { createStore } from "zustand";
 import { uuid } from "./layoutEngine/utils";
+import { debounce } from "lodash-es";
 
 interface LFStoreState {
   nodes: Node[];
@@ -27,16 +28,17 @@ export function createLFStore(config: LFStoreConfig) {
   const engineIns = new LayoutEngine(config.flowNodes);
   const data = engineIns.exportReactFlowData();
   console.log(data, engineIns.flowBlockMap[engineIns.rootId!]);
-  const store = createStore<LFStoreState>((set) => {
+  const store = createStore<LFStoreState>((set, get) => {
     function setNodesEdges() {
       const data = engineIns.exportReactFlowData();
-      console.log("setNodesEdges:", data);
       set({ nodes: data.nodes, edges: data.edges });
     }
 
     function render() {
       queueEffectFn(setNodesEdges);
     }
+
+    const rerender = debounce(setNodesEdges, 0);
 
     return {
       rerender: render,
