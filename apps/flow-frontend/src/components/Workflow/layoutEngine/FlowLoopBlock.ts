@@ -12,7 +12,7 @@ export class FlowLoopBlock extends FlowBlock {
   innerBlock: FlowBlock | null = null;
   innerMb: number = 50;
   // 左右padding
-  padding: number = 20;
+  padding: number = 40;
 
   setInnerBlock(block: FlowBlock) {
     if (this.innerBlock) {

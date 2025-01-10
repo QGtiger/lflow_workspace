@@ -47,7 +47,13 @@ export function PathsEdge(props: EdgeProps) {
 
   return (
     <>
-      <BaseEdge path={edgePath} markerEnd={markerEnd} />
+      <BaseEdge
+        path={edgePath}
+        markerEnd={markerEnd}
+        style={{
+          stroke: "#0984e3",
+        }}
+      />
       <EdgeLabelRenderer>
         <div
           className=" absolute pointer-events-auto"

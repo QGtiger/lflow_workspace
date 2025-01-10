@@ -22,6 +22,7 @@ function WorkflowWrapper() {
         // we are setting deleteKeyCode to null to prevent the deletion of nodes in order to keep the example simple.
         // If you want to enable deletion of nodes, you need to make sure that you only have one root node in your graph.
         deleteKeyCode={null}
+        nodesDraggable={false}
       >
         <Background />
       </ReactFlow>

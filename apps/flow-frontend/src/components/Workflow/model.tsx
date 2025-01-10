@@ -31,6 +31,7 @@ export function createLFStore(config: LFStoreConfig) {
   const store = createStore<LFStoreState>((set, get) => {
     function setNodesEdges() {
       const data = engineIns.exportReactFlowData();
+      console.log("setNodesEdges", data);
       set({ nodes: data.nodes, edges: data.edges });
     }
 
@@ -38,7 +39,7 @@ export function createLFStore(config: LFStoreConfig) {
       queueEffectFn(setNodesEdges);
     }
 
-    const rerender = debounce(setNodesEdges, 0);
+    const rerender = debounce(setNodesEdges, 1000);
 
     return {
       rerender: render,

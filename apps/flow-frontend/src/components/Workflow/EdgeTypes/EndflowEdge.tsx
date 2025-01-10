@@ -95,7 +95,13 @@ export function EndflowEdge(props: WflowEdgeProps) {
 
   return (
     <>
-      <BaseEdge path={edgePath2} markerEnd={markerEnd} />
+      <BaseEdge
+        path={edgePath2}
+        markerEnd={markerEnd}
+        style={{
+          stroke: "#0984e3",
+        }}
+      />
       <EdgeLabelRenderer>
         <div
           className=" absolute pointer-events-auto"
