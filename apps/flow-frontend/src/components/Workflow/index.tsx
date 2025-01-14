@@ -7,26 +7,25 @@ import edgeTypes from "./EdgeTypes";
 
 function WorkflowWrapper() {
   const { nodes, edges } = useLFStoreState();
+
   return (
-    <ReactFlowProvider>
-      <ReactFlow
-        fitView
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        minZoom={0.2}
-        // nodesDraggable={false}
-        nodesConnectable={false}
-        zoomOnDoubleClick={false}
-        // we are setting deleteKeyCode to null to prevent the deletion of nodes in order to keep the example simple.
-        // If you want to enable deletion of nodes, you need to make sure that you only have one root node in your graph.
-        deleteKeyCode={null}
-        nodesDraggable={false}
-      >
-        <Background />
-      </ReactFlow>
-    </ReactFlowProvider>
+    <ReactFlow
+      fitView
+      nodes={nodes}
+      edges={edges}
+      nodeTypes={nodeTypes}
+      edgeTypes={edgeTypes}
+      minZoom={0.2}
+      // nodesDraggable={false}
+      nodesConnectable={false}
+      zoomOnDoubleClick={false}
+      // we are setting deleteKeyCode to null to prevent the deletion of nodes in order to keep the example simple.
+      // If you want to enable deletion of nodes, you need to make sure that you only have one root node in your graph.
+      deleteKeyCode={null}
+      nodesDraggable={false}
+    >
+      <Background />
+    </ReactFlow>
   );
 }
 
@@ -38,7 +37,9 @@ export default function Workflow(props: LFStoreConfig) {
 
   return (
     <StoreContext.Provider value={storeRef.current}>
-      <WorkflowWrapper />
+      <ReactFlowProvider>
+        <WorkflowWrapper />
+      </ReactFlowProvider>
     </StoreContext.Provider>
   );
 }

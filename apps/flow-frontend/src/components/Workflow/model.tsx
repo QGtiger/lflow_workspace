@@ -31,16 +31,22 @@ export function createLFStore(config: LFStoreConfig) {
   const store = createStore<LFStoreState>((set) => {
     function setNodesEdges() {
       const data = engineIns.exportReactFlowData();
-      console.log("setNodesEdges", data);
-      set({ nodes: data.nodes, edges: data.edges });
+      const nodesWithTransition = data.nodes.map((node) => ({
+        ...node,
+        style: {
+          ...node.style,
+          transition: "all 200ms ease-in-out",
+        },
+      }));
+      set({ nodes: nodesWithTransition, edges: data.edges });
     }
 
     function render() {
       queueEffectFn(setNodesEdges);
     }
 
-    // @ts-expect-error 做调试
-    const rerender = debounce(setNodesEdges, 1000);
+    // @ts-nocheck
+    const rerender = debounce(setNodesEdges, 0);
 
     setNodesEdges();
 
