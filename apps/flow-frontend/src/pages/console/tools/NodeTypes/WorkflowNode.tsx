@@ -15,7 +15,8 @@ const WorkflowNode = ({ id, data }: NodeProps<BuiltInNode>) => {
   // see the hook implementation for details of the click handler
   // calling onClick adds a child node to this node
   const onClick = useNodeClickHandler(id);
-  const [innerText, setInnerText] = useState(data.label);
+  const [innerText] = useState(data.label);
+  // @ts-expect-error 做调试
   const { setNodes, getNodes } = useReactFlow();
 
   console.log("render", id);

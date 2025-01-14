@@ -1,12 +1,5 @@
-import { RectInfer } from "./DisplayObject";
 import { FlowBlock } from "./FlowBlock";
-import {
-  EndNode,
-  generateEdge,
-  ReactFlowData,
-  traceBlock,
-  WflowEdge,
-} from "./utils";
+import { EndNode, generateEdge, ReactFlowData, traceBlock } from "./utils";
 
 export class FlowLoopBlock extends FlowBlock {
   innerBlock: FlowBlock | null = null;

@@ -35,7 +35,7 @@ function getCustomSmoothStepPath(config: {
 }
 
 export function PathsEdge(props: EdgeProps) {
-  const { sourceX, sourceY, targetX, targetY, markerEnd, data, source } = props;
+  const { sourceX, sourceY, targetX, targetY, markerEnd, source } = props;
   const [edgePath, labelX, labelY] = getCustomSmoothStepPath({
     radius: 3,
     sourceX,

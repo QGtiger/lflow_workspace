@@ -1,4 +1,4 @@
-import { createContext, useRef } from "react";
+import { createContext } from "react";
 import { LayoutEngine } from "./layoutEngine";
 import { Edge, Node } from "@xyflow/react";
 import { queueEffectFn } from "./layoutEngine/queueTickFn";
@@ -28,7 +28,7 @@ export function createLFStore(config: LFStoreConfig) {
   const engineIns = new LayoutEngine(config.flowNodes);
   const data = engineIns.exportReactFlowData();
   console.log(data, engineIns.flowBlockMap[engineIns.rootId!]);
-  const store = createStore<LFStoreState>((set, get) => {
+  const store = createStore<LFStoreState>((set) => {
     function setNodesEdges() {
       const data = engineIns.exportReactFlowData();
       console.log("setNodesEdges", data);
@@ -39,7 +39,10 @@ export function createLFStore(config: LFStoreConfig) {
       queueEffectFn(setNodesEdges);
     }
 
+    // @ts-expect-error 做调试
     const rerender = debounce(setNodesEdges, 1000);
+
+    setNodesEdges();
 
     return {
       rerender: render,

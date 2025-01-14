@@ -2,14 +2,7 @@ import { FlowBlock } from "./FlowBlock";
 import { RectInfer } from "./DisplayObject";
 import { FlowPathsBlock } from "./FlowPathsBlock";
 import { FlowPathRuleBlock } from "./FlowPathRuleBlock";
-import {
-  isLoopNode,
-  isPathRuleNode,
-  isPathsBlock,
-  isPathsNode,
-  traceAll,
-  traceBlock,
-} from "./utils";
+import { isLoopNode, isPathRuleNode, isPathsNode, traceAll } from "./utils";
 import { FlowLoopBlock } from "./FlowLoopBlock";
 
 export class LayoutEngine {

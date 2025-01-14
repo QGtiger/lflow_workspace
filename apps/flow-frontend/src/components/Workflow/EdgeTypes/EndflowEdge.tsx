@@ -47,7 +47,6 @@ function customStepLine(point1: XYPosition, point2: XYPosition) {
     const radius = 3;
 
     // 计算圆弧的起始点和结束点
-    const arcStartX = x1;
     const arcStartY = y2 - radius;
     const arcEndY = y2;
 

@@ -1,4 +1,3 @@
-import { Node } from "@xyflow/react";
 import { FlowBlock } from "./FlowBlock";
 import { FlowPathRuleBlock } from "./FlowPathRuleBlock";
 import { EndNode, generateEdge, ReactFlowData } from "./utils";
