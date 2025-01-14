@@ -7,6 +7,8 @@ import {
 } from "@xyflow/react";
 import useNewNode from "../hooks/useNewNode";
 import { WflowEdgeProps } from "../layoutEngine/utils";
+import CommonAddButton from "./CommonAddButton";
+import useStrokeColor from "../hooks/useStrokeColor";
 
 function getNodeEdgePoint(node: Node, x: number, y: number): XYPosition {
   const { type, position, width, height } = node;
@@ -82,6 +84,7 @@ export function EndflowEdge(props: WflowEdgeProps) {
   const sourceNode = getNode(source);
   const targetNode = getNode(target);
   const addNode = useNewNode();
+  const strokeColor = useStrokeColor();
 
   if (!sourceNode || !targetNode) {
     return <></>;
@@ -98,7 +101,7 @@ export function EndflowEdge(props: WflowEdgeProps) {
         path={edgePath2}
         markerEnd={markerEnd}
         style={{
-          stroke: "#0984e3",
+          stroke: strokeColor,
         }}
       />
       <EdgeLabelRenderer>
@@ -111,14 +114,11 @@ export function EndflowEdge(props: WflowEdgeProps) {
             transformOrigin: "center",
           }}
         >
-          <div
-            className=" cursor-pointer text-xs bg-white border border-solid border-gray-400 rounded-md"
+          <CommonAddButton
             onClick={() => {
               addNode(data.parentId);
             }}
-          >
-            +
-          </div>
+          />
         </div>
       </EdgeLabelRenderer>
     </>

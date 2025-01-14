@@ -1,5 +1,7 @@
 import { BaseEdge, EdgeLabelRenderer, EdgeProps } from "@xyflow/react";
 import useAddPathRule from "../hooks/useAddPathRule";
+import CommonAddButton from "./CommonAddButton";
+import useStrokeColor from "../hooks/useStrokeColor";
 
 function getCustomSmoothStepPath(config: {
   sourceX: number;
@@ -44,6 +46,7 @@ export function PathsEdge(props: EdgeProps) {
     targetY,
   });
   const addPath = useAddPathRule();
+  const strokeColor = useStrokeColor();
 
   return (
     <>
@@ -51,7 +54,7 @@ export function PathsEdge(props: EdgeProps) {
         path={edgePath}
         markerEnd={markerEnd}
         style={{
-          stroke: "#0984e3",
+          stroke: strokeColor,
         }}
       />
       <EdgeLabelRenderer>
@@ -62,14 +65,11 @@ export function PathsEdge(props: EdgeProps) {
             transformOrigin: "center",
           }}
         >
-          <div
-            className=" cursor-pointer text-xs bg-white border border-solid border-gray-400 rounded-md"
+          <CommonAddButton
             onClick={() => {
               addPath(source);
             }}
-          >
-            +分支
-          </div>
+          />
         </div>
       </EdgeLabelRenderer>
     </>

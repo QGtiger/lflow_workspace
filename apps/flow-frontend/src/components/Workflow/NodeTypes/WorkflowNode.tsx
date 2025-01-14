@@ -28,7 +28,7 @@ const WorkflowNode = (props: WorkflowNodeProps) => {
   return (
     <div
       ref={nodeRef}
-      className={cx("custom-node")}
+      className={cx("work-flow-node")}
       title="click to add a child node"
       onClick={() => {
         setInnerText(innerText + "1");

@@ -39,7 +39,7 @@ function LoopNode(props: WorkflowNodeProps) {
         }}
       >
         <div
-          className="custom-node"
+          className="work-flow-node "
           ref={visualNodeRef}
           style={{
             transform: "translate(-1px, -1px)",
@@ -50,7 +50,7 @@ function LoopNode(props: WorkflowNodeProps) {
         </div>
       </div>
       <div
-        className="custom-node"
+        className="work-flow-node "
         style={{
           visibility: "hidden",
         }}

@@ -14,6 +14,8 @@ interface LFStoreState {
   changeNodeData(id: string, data: Omit<WorkflowNode, "id">): void;
   layoutEngine: LayoutEngine;
   rerender(): void;
+
+  strokeColor: string;
 }
 
 export type LFStore = ReturnType<typeof createLFStore>;
@@ -72,6 +74,7 @@ export function createLFStore(config: LFStoreConfig) {
         engineIns.changeFlowBlockData(id, data);
         render();
       },
+      strokeColor: "#98a2b3",
     };
   });
 

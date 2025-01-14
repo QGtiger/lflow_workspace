@@ -57,7 +57,7 @@ export class FlowLoopBlock extends FlowBlock {
       style: {
         width: lw,
         height: 1,
-        // visibility: "hidden",
+        visibility: "hidden",
       },
       type: "endflowNode",
       realParentId: this.id,

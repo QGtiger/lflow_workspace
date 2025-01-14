@@ -15,15 +15,19 @@
 }
 
 .node-style {
-  border: 1px solid #0984e3;
+  border: 1px solid #98a2b3;
   border-radius: 4px;
   background-color: #fff;
   box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
   color: #0984e3;
 }
 
-.custom-node {
-  border: 1px solid #0984e3;
+.react-flow__handle {
+  visibility: hidden;
+}
+
+.work-flow-node {
+  border: 1px solid #98a2b3;
   border-radius: 4px;
   background-color: #fff;
   box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
@@ -35,16 +39,13 @@
   line-height: 1.2;
   position: relative;
   word-break: break-all;
+  width: 300px;
 }
 
-.custom-node:hover {
+.work-flow-node:hover {
   background: radial-gradient(
     circle at 18.7% 37.8%,
     rgb(252, 252, 252) 0%,
     rgb(239, 241, 243) 90%
   );
-}
-
-.custom-node .react-flow__handle {
-  visibility: hidden;
 }
