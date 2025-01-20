@@ -1,8 +1,7 @@
+import { generatePathRuleNode } from "../layoutEngine/core/PathRuleConnector";
 import type { FlowPathsBlock } from "../layoutEngine/FlowPathsBlock";
-import { isPathsBlock, uuid } from "../layoutEngine/utils";
+import { isPathsBlock } from "../layoutEngine/utils";
 import useLFStoreState from "./useLFStoreState";
-
-export const PathRuleCode = "PathRule";
 
 export default function useAddPathRule() {
   const { layoutEngine, rerender } = useLFStoreState();
@@ -13,10 +12,7 @@ export default function useAddPathRule() {
       throw new Error("only Path block can add PathRule");
     }
     (b as FlowPathsBlock).addChild(
-      layoutEngine.generateBlock({
-        id: uuid(),
-        connectorCode: PathRuleCode,
-      })
+      layoutEngine.generateBlock(generatePathRuleNode())
     );
     rerender();
   };

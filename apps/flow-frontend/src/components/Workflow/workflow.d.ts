@@ -7,6 +7,7 @@ interface WorkflowNode {
   actionName?: string;
   logo?: string;
   version?: string;
+  description?: string;
 
   children?: WorkflowNode["id"][];
   next?: WorkflowNode["id"];

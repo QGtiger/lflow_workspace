@@ -1,18 +1,30 @@
+import { generateEmptyNode } from "./core";
 import { FlowBlock } from "./FlowBlock";
 import { EndNode, generateEdge, ReactFlowData, traceBlock } from "./utils";
 
 export class FlowLoopBlock extends FlowBlock {
-  innerBlock: FlowBlock | null = null;
+  innerBlock?: FlowBlock;
   innerMb: number = 50;
   // 左右padding
   padding: number = 40;
 
-  setInnerBlock(block: FlowBlock) {
+  constructor(public flowNodeData: WorkflowNode, innerBlock?: FlowBlock) {
+    super(flowNodeData);
+    this.setInnerBlock(innerBlock || new FlowBlock(generateEmptyNode()));
+  }
+
+  setInnerBlock(block?: FlowBlock, replace?: boolean) {
     if (this.innerBlock) {
-      block.setLastNext(this.innerBlock);
+      if (replace) {
+        this.innerBlock.removeLink();
+      } else {
+        block?.setLastNext(this.innerBlock);
+      }
     }
     this.innerBlock = block;
-    block.parent = this;
+    if (block) {
+      block.parent = this;
+    }
 
     return block;
   }

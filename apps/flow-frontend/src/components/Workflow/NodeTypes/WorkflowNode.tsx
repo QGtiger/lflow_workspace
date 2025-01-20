@@ -13,7 +13,6 @@ const WorkflowNode = (props: WorkflowNodeProps) => {
   const { id, data } = props;
   const nodeRef = useRef<HTMLDivElement>(null);
   const nodeResize = useNodeResize();
-  const [innerText, setInnerText] = useState(data.label);
 
   useResizeObserver(nodeRef, (entry) => {
     if (!id) return;
@@ -30,11 +29,8 @@ const WorkflowNode = (props: WorkflowNodeProps) => {
       ref={nodeRef}
       className={cx("work-flow-node")}
       title="click to add a child node"
-      onClick={() => {
-        setInnerText(innerText + "1");
-      }}
     >
-      {innerText}
+      {data.label}
       <Handle type="target" position={Position.Top} isConnectable={false} />
       <Handle type="source" position={Position.Bottom} isConnectable={false} />
     </div>

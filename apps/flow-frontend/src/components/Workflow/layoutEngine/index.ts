@@ -34,29 +34,29 @@ export class LayoutEngine {
     let item: FlowBlock;
     const { initialNodes } = this;
     if (isLoopNode(node)) {
-      this.flowBlockMap[node.id] = item = new FlowLoopBlock(node);
       if (!node.children?.length) {
-        throw new Error("Loop 节点必须有 children");
-      } else {
-        const childBlock = this.transferWrokflowNodeToFlowBlock({
+        throw new Error("循环 节点必须有 children");
+      }
+      this.flowBlockMap[node.id] = item = new FlowLoopBlock(
+        node,
+        this.transferWrokflowNodeToFlowBlock({
           nodes: initialNodes,
           startId: node.children[0],
-        });
-        (item as FlowLoopBlock).setInnerBlock(childBlock);
-      }
+        })
+      );
     } else if (isPathsNode(node)) {
-      this.flowBlockMap[node.id] = item = new FlowPathsBlock(node);
       if (!node.children) {
-        throw new Error("Path 节点必须有 children");
-      } else {
-        node.children.forEach((child) => {
-          const childBlock = this.transferWrokflowNodeToFlowBlock({
+        throw new Error("分支 节点必须有 children");
+      }
+      this.flowBlockMap[node.id] = item = new FlowPathsBlock(
+        node,
+        node.children.map((child) => {
+          return this.transferWrokflowNodeToFlowBlock({
             nodes: initialNodes,
             startId: child,
           });
-          (item as FlowPathsBlock).addChild(childBlock);
-        });
-      }
+        })
+      );
     } else if (isPathRuleNode(node)) {
       this.flowBlockMap[node.id] = item = new FlowPathRuleBlock(node);
     } else {
@@ -76,9 +76,8 @@ export class LayoutEngine {
   }
 
   deleteFlowBlock(id: string) {
-    const block = this.getBlockByCheckNodeExist(id);
+    this.getBlockByCheckNodeExist(id);
     delete this.flowBlockMap[id];
-    block.break();
   }
 
   changeFlowBlockData(id: string, data: Omit<WorkflowNode, "id">) {

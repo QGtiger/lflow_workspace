@@ -1,8 +1,9 @@
 import { Edge, EdgeProps, Node, NodeProps } from "@xyflow/react";
 import type { FlowBlock } from "./FlowBlock";
 import type { FlowPathsBlock } from "./FlowPathsBlock";
-import { PathRuleCode } from "../hooks/useAddPathRule";
-import { LoopNodeCode } from "../hooks/useLoopNode";
+import { LoopNodeCode } from "./core/LoopConnector";
+import { PathRuleCode } from "./core/PathRuleConnector";
+import { PathsNodeCode } from "./core/PathsConnector";
 
 export type EndNode = Node & { realParentId?: string };
 
@@ -59,7 +60,7 @@ export function isPathRuleBlock(block: FlowBlock) {
 }
 
 export function isPathsNode(node: WorkflowNode) {
-  return node.connectorCode === "Path";
+  return node.connectorCode === PathsNodeCode;
 }
 
 export function isPathsBlock(block: FlowBlock) {
