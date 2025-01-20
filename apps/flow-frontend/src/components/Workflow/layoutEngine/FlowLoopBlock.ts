@@ -76,23 +76,29 @@ export class FlowLoopBlock extends FlowBlock {
     };
   }
 
-  exportReactFlowDataByFlowBlock(): ReactFlowData {
+  exportReactFlowDataByFlowBlock(index: number = 1): ReactFlowData {
     if (!this.innerBlock) {
       throw new Error("innerBlock is required");
     }
+    this.index = index;
 
     const endNode = this.generateEndNode();
 
-    const innerChildNodes = this.innerBlock.exportReactFlowDataByFlowBlock();
+    const innerChildNodes = this.innerBlock.exportReactFlowDataByFlowBlock(
+      index + 1
+    );
 
     const currNode = this.getNodeData({
       type: "LoopNode",
     });
 
-    const nextBlockData = this.next?.exportReactFlowDataByFlowBlock() || {
+    const nextBlockData = this.next?.exportReactFlowDataByFlowBlock(
+      innerChildNodes.index
+    ) || {
       nodes: [],
       edges: [],
       endNode,
+      index: innerChildNodes.index,
     };
 
     const nodes = [
@@ -123,14 +129,13 @@ export class FlowLoopBlock extends FlowBlock {
         ];
       })(),
       ...nextBlockData.edges,
-      // { id: `${currNode.id}-${innerChildNodes.startNode.id}`, source: currNode.id, target: innerChildNodes.startNode.id, type: "smoothstep" },
-      // { id: `${innerChildNodes.endNode.id}-${endNode.id}`, source: innerChildNodes.endNode.id, target: endNode.id, type: "smoothstep" },
     ];
 
     return {
       nodes,
       edges,
       endNode: nextBlockData.endNode,
+      index: nextBlockData.index,
     };
   }
 }

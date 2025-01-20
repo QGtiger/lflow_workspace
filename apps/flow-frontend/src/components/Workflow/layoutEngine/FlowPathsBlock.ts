@@ -87,14 +87,16 @@ export class FlowPathsBlock extends FlowBlock {
     };
   }
 
-  exportReactFlowDataByFlowBlock(): ReactFlowData {
+  exportReactFlowDataByFlowBlock(index: number = 1): ReactFlowData {
+    this.index = index;
     const childrenNodes = this.children.reduce(
       (acc, curr) => {
-        const d = curr.exportReactFlowDataByFlowBlock();
+        const d = curr.exportReactFlowDataByFlowBlock(acc.preIndex);
         acc.nodes.push(...d.nodes);
         acc.edges.push(...d.edges);
         acc.startNodes.push(d.nodes[0]);
         acc.endNodes.push(d.endNode);
+        acc.preIndex = d.index;
         return acc;
       },
       {
@@ -102,20 +104,25 @@ export class FlowPathsBlock extends FlowBlock {
         edges: [],
         startNodes: [],
         endNodes: [],
+        preIndex: index + 1,
       } as {
         nodes: ReactFlowData["nodes"];
         edges: ReactFlowData["edges"];
         startNodes: ReactFlowData["nodes"];
         endNodes: ReactFlowData["nodes"];
+        preIndex: number;
       }
     );
 
     const endNode = this.generateEndNode();
 
-    const nextBlockData = this.next?.exportReactFlowDataByFlowBlock() || {
+    const nextBlockData = this.next?.exportReactFlowDataByFlowBlock(
+      childrenNodes.preIndex
+    ) || {
       nodes: [],
       edges: [],
       endNode,
+      index: childrenNodes.preIndex,
     };
 
     const nodes = Array.prototype.concat.call(
@@ -158,6 +165,11 @@ export class FlowPathsBlock extends FlowBlock {
       nextBlockData.edges
     );
 
-    return { nodes, edges, endNode: nextBlockData.endNode };
+    return {
+      nodes,
+      edges,
+      endNode: nextBlockData.endNode,
+      index: nextBlockData.index,
+    };
   }
 }

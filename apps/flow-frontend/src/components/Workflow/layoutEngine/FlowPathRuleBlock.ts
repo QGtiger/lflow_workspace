@@ -45,7 +45,7 @@ export class FlowPathRuleBlock extends FlowBlock {
 
     return {
       id: this.id,
-      data: { label: id, nodeData: this.flowNodeData },
+      data: { label: id, nodeData: this.flowNodeData, index: this.index },
       parentId: parent?.id,
       position: {
         x: w + (this.queryViewWidth() - this.w) / 2,

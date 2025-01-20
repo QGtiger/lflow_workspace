@@ -11,6 +11,7 @@ export type ReactFlowData = {
   nodes: Node[];
   edges: WflowEdge[];
   endNode: EndNode;
+  index: number;
 };
 export type WflowEdge = Edge & { data: { parentId: string } };
 export type WflowEdgeProps = EdgeProps & { data: { parentId: string } };
@@ -20,6 +21,7 @@ export type WorkflowNodeProps = NodeProps & {
     label: string;
     vw: number;
     vh: number;
+    index: number;
     [x: string]: any;
   };
 };

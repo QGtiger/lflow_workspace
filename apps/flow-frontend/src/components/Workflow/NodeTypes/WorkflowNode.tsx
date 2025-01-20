@@ -30,7 +30,7 @@ const WorkflowNode = (props: WorkflowNodeProps) => {
       className={cx("work-flow-node")}
       title="click to add a child node"
     >
-      {data.label}
+      {data.index}.{data.nodeData.connectorName || "空白节点"}
       <Handle type="target" position={Position.Top} isConnectable={false} />
       <Handle type="source" position={Position.Bottom} isConnectable={false} />
     </div>

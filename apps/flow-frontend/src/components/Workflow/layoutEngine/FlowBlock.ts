@@ -15,7 +15,7 @@ export class FlowBlock extends DisplayObject {
 
   viewWidth: number = 0;
   viewHeight: number = 0;
-
+  index: number = 0;
   get id() {
     return this.flowNodeData.id;
   }
@@ -101,6 +101,7 @@ export class FlowBlock extends DisplayObject {
         nodeData: this.flowNodeData,
         vh: this.queryViewHeight(),
         vw: this.queryViewWidth(),
+        index: this.index,
       },
       parentId: parentBlock?.id,
       position: {
@@ -114,12 +115,16 @@ export class FlowBlock extends DisplayObject {
     };
   }
 
-  exportReactFlowDataByFlowBlock(): ReactFlowData {
+  exportReactFlowDataByFlowBlock(index: number = 1): ReactFlowData {
     const currNode = this.getNodeData();
-    const nextBlockData = this.next?.exportReactFlowDataByFlowBlock() || {
+    this.index = index;
+    const nextBlockData = this.next?.exportReactFlowDataByFlowBlock(
+      index + 1
+    ) || {
       nodes: [],
       edges: [],
       endNode: currNode,
+      index: this.index + 1,
     };
 
     const nodes = Array.prototype.concat.call(
@@ -145,6 +150,7 @@ export class FlowBlock extends DisplayObject {
       nodes,
       edges,
       endNode: nextBlockData.endNode,
+      index: nextBlockData.index,
     };
   }
 }

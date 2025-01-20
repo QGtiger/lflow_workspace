@@ -4,17 +4,33 @@ import nodeTypes from "./NodeTypes";
 import { createLFStore, LFStore, LFStoreConfig, StoreContext } from "./model";
 import useLFStoreState from "./hooks/useLFStoreState";
 import edgeTypes from "./EdgeTypes";
-import { useCopilotReadable } from "@copilotkit/react-core";
+import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
+import useNewNode from "./hooks/useNewNode";
 
 function WorkflowWrapper() {
   const { nodes, edges } = useLFStoreState();
+  const addNewNode = useNewNode();
 
   useCopilotReadable({
     description: "当前流程的连接器数据",
     value: nodes.filter((node) => node.type !== "endflowNode"),
   });
 
-  console.log(nodes.filter((node) => node.type !== "endflowNode"));
+  useCopilotAction({
+    name: "addNode",
+    description: "添加节点，需要用户提供父节点id",
+    parameters: [
+      {
+        name: "parentId",
+        description: "父节点id",
+        type: "string",
+      },
+    ],
+    handler: (params) => {
+      const { parentId } = params;
+      addNewNode(parentId);
+    },
+  });
 
   return (
     <ReactFlow

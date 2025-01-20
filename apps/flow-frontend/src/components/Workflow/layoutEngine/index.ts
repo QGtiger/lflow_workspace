@@ -121,6 +121,16 @@ export class LayoutEngine {
       block.viewHeight = 0;
       block.viewWidth = 0;
     });
-    return b.exportReactFlowDataByFlowBlock();
+    const { nodes, edges, endNode } = b.exportReactFlowDataByFlowBlock();
+    // const finalNode = {
+    //   id: `final-end`,
+    //   data: { label: "end", nodeData: {} },
+    //   parentId: endNode.id,
+    //   position: { x: 0, y: 0 },
+    //   style: { width: 100, height: 1, visibility: "hidden" },
+    //   type: "endflowNode",
+    //   realParentId: this.rootId,
+    // };
+    return { nodes, edges, endNode };
   }
 }
