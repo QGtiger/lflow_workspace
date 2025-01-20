@@ -23,7 +23,7 @@ export default function Layout() {
         {outlet}
         <div ref={holderRef}>{notificationContextHolder}</div>
       </UserModel.Provider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} position="left" /> */}
     </ConfigProvider>
   );
 }

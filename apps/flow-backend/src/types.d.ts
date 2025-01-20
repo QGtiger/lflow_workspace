@@ -17,6 +17,10 @@ declare module 'express' {
     path: string;
     body: any;
   }
+
+  interface Response {
+    [x: string]: any;
+  }
 }
 
 type ExcludeEntity<T> = Omit<T, 'created_at' | 'updated_at' | 'id'>;

@@ -10,6 +10,7 @@ export default function Overview() {
           <div className="bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer">
             开始探索
           </div>
+          <button className=" bg-slate-600 sr-only">111</button>
         </div>
       </div>
     </div>

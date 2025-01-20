@@ -48,7 +48,7 @@ import { Role } from './user/entities/role.entity';
           password: configService.get('MYSQL_SERVER_PASSWORD'),
           database: configService.get('MYSQL_SERVER_DATABASE'),
           synchronize: true,
-          logging: true,
+          logging: false,
           entities: [Permission, User, Role],
           poolSize: 10,
           connectorPackage: 'mysql2',
