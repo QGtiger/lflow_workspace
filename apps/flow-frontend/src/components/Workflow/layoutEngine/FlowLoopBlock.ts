@@ -9,7 +9,7 @@ import {
 
 export class FlowLoopBlock extends FlowBlock {
   innerBlock?: FlowBlock;
-  innerMb: number = 50;
+  innerMb: number = 40;
   // 左右padding
   padding: number = 40;
 
@@ -136,7 +136,7 @@ export class FlowLoopBlock extends FlowBlock {
       generateEdge({
         sourceNode: currNode,
         targetNode: innerChildNodes.nodes[0],
-        type: "LoopInnerEdge",
+        type: "loopInnerEdge",
       }),
       ...innerChildNodes.edges,
       // generateEdge({

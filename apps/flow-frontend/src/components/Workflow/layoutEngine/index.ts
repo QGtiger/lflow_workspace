@@ -3,11 +3,13 @@ import { RectInfer } from "./DisplayObject";
 import { FlowPathsBlock } from "./FlowPathsBlock";
 import { FlowPathRuleBlock } from "./FlowPathRuleBlock";
 import {
+  generateEdge,
   isLoopNode,
   isPathRuleNode,
   isPathsNode,
   traceAll,
   uuid,
+  WflowNode,
 } from "./utils";
 import { FlowLoopBlock } from "./FlowLoopBlock";
 import { generatePathRuleNode } from "./core/PathRuleConnector";
@@ -154,16 +156,38 @@ export class LayoutEngine {
       block.viewWidth = 0;
     });
     const { nodes, edges, endNode } = b.exportReactFlowDataByFlowBlock();
-    // const finalNode = {
-    //   id: `final-end`,
-    //   data: { label: "end", nodeData: {} },
-    //   parentId: endNode.id,
-    //   position: { x: 0, y: 0 },
-    //   style: { width: 100, height: 1, visibility: "hidden" },
-    //   type: "endflowNode",
-    //   realParentId: this.rootId,
-    // };
-    return { nodes, edges, endNode };
+
+    const lw = 100;
+    const parentId = endNode.realParentId || endNode.id;
+    const parentBlock = this.getBlockByCheckNodeExist(parentId);
+    const finalNode: WflowNode = {
+      id: `final-end`,
+      data: { label: "结束" } as any,
+      parentId,
+      position: {
+        x: (parentBlock.w - lw) / 2,
+        y: parentBlock.queryViewHeight() + parentBlock.mb,
+      },
+      style: {
+        width: lw,
+        height: 1,
+        textAlign: "center",
+        fontSize: 12,
+        color: "#bbb",
+        fontWeight: "bold",
+      },
+      type: "endflowNode",
+    };
+    return {
+      nodes: nodes.concat([finalNode]),
+      edges: edges.concat([
+        generateEdge({
+          sourceNode: endNode,
+          targetNode: finalNode,
+        }),
+      ]),
+      endNode,
+    };
   }
 
   exportFlowNodes() {

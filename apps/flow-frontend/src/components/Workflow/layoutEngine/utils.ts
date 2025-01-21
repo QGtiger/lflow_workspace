@@ -6,16 +6,22 @@ import { PathRuleCode } from "./core/PathRuleConnector";
 import { PathsNodeCode } from "./core/PathsConnector";
 import type { FlowLoopBlock } from "./FlowLoopBlock";
 
-export type EndNode = Node & { realParentId?: string };
+export type EndNode = WflowNode & { realParentId?: string };
 
 export type ReactFlowData = {
-  nodes: Node[];
+  nodes: WflowNode[];
   edges: WflowEdge[];
   endNode: EndNode;
   index: number;
 };
 export type WflowEdge = Edge & { data: { parentId: string } };
 export type WflowEdgeProps = EdgeProps & { data: { parentId: string } };
+export type WflowNode = Node & {
+  data: {
+    nodeData: WorkflowNode;
+    index?: number;
+  };
+};
 export type WorkflowNodeProps = NodeProps & {
   data: {
     nodeData: WorkflowNode;
@@ -80,16 +86,25 @@ export function isLoopBlock(block: FlowBlock) {
 }
 
 export function generateEdge(config: {
-  sourceNode: { id: string };
-  targetNode: { id: string };
+  sourceNode: WflowNode;
+  targetNode: WflowNode;
   type?: string;
 }): WflowEdge {
   const { sourceNode, targetNode, type } = config;
+  let _type = type || "stepflowEdge";
+
+  if (targetNode.data?.nodeData && isEmptyNode(targetNode.data.nodeData)) {
+    _type = "placeholderEdge";
+  }
+  if (sourceNode.data?.nodeData && isEmptyNode(sourceNode.data.nodeData)) {
+    _type = "placeholderEdge";
+  }
+
   return {
     id: `${sourceNode.id}-${targetNode.id}`,
     source: sourceNode.id,
     target: targetNode.id,
-    type: type || "stepflowEdge",
+    type: _type,
     data: {
       parentId: (sourceNode as any).realParentId || sourceNode.id,
     },
@@ -115,7 +130,7 @@ export function isInnerBlock(block: FlowBlock) {
   return false;
 }
 
-export function generateNode(config: { block: FlowBlock }): Node {
+export function generateNode(config: { block: FlowBlock }): WflowNode {
   const { block } = config;
   const { parent: parentBlock } = block;
   const position: {
@@ -124,7 +139,7 @@ export function generateNode(config: { block: FlowBlock }): Node {
   } = (() => {
     if (!parentBlock)
       return {
-        x: 0, // -block.w / 2,
+        x: -block.w / 2,
         y: 0,
       };
     if (isPathsBlock(parentBlock)) {

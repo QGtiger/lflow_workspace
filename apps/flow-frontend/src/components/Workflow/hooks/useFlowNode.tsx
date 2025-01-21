@@ -111,7 +111,7 @@ export default function useFlowNode() {
   };
 
   const replaceNode = (id: string) => {
-    createModal({
+    const ins = createModal({
       title: "替换节点",
       icon: null,
       content: (
@@ -124,28 +124,34 @@ export default function useFlowNode() {
             delNode(id);
 
             addConnectorNode({ parentId, connector: item, inner: isInner });
+            ins.destroy();
           }}
         />
       ),
       footer: null,
       closable: true,
+      maskClosable: true,
     });
+    return ins;
   };
 
-  const addNodeByEdge = (parentId: string) => {
-    createModal({
+  const addNodeByEdge = (parentId: string, inner?: boolean) => {
+    const ins = createModal({
       title: "添加节点",
       icon: null,
       content: (
         <AddNodeModal
           onItemClick={(item) => {
-            addConnectorNode({ parentId, connector: item });
+            addConnectorNode({ parentId, connector: item, inner });
+            ins.destroy();
           }}
         />
       ),
       footer: null,
       closable: true,
+      maskClosable: true,
     });
+    return ins;
   };
 
   return {

@@ -1,8 +1,8 @@
 import { BaseEdge, EdgeLabelRenderer, getStraightPath } from "@xyflow/react";
 import { WflowEdgeProps } from "../layoutEngine/utils";
-import useLoopNode from "../hooks/useLoopNode";
 import CommonAddButton from "./CommonAddButton";
 import useStrokeColor from "../hooks/useStrokeColor";
+import useFlowNode from "../hooks/useFlowNode";
 
 export default function LoopInnerEdge(props: WflowEdgeProps) {
   const { sourceX, sourceY, targetX, targetY, markerEnd, data } = props;
@@ -12,7 +12,7 @@ export default function LoopInnerEdge(props: WflowEdgeProps) {
     targetX,
     targetY,
   });
-  const { addInnerNode } = useLoopNode();
+  const { addNodeByEdge } = useFlowNode();
   const strokeColor = useStrokeColor();
 
   return (
@@ -34,7 +34,7 @@ export default function LoopInnerEdge(props: WflowEdgeProps) {
         >
           <CommonAddButton
             onClick={() => {
-              addInnerNode(data.parentId);
+              addNodeByEdge(data.parentId, true);
             }}
           />
         </div>
