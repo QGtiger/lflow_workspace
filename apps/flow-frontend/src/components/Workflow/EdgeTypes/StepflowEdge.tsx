@@ -1,8 +1,8 @@
 import { BaseEdge, EdgeLabelRenderer, getStraightPath } from "@xyflow/react";
-import useNewNode from "../hooks/useNewNode";
 import { WflowEdgeProps } from "../layoutEngine/utils";
 import CommonAddButton from "./CommonAddButton";
 import useStrokeColor from "../hooks/useStrokeColor";
+import useFlowNode from "../hooks/useFlowNode";
 
 export default function StepflowEdge(props: WflowEdgeProps) {
   const { sourceX, sourceY, targetX, targetY, markerEnd, data } = props;
@@ -12,7 +12,7 @@ export default function StepflowEdge(props: WflowEdgeProps) {
     targetX,
     targetY,
   });
-  const add = useNewNode();
+  const { addNodeByEdge } = useFlowNode();
   const strokeColor = useStrokeColor();
 
   return (
@@ -35,7 +35,7 @@ export default function StepflowEdge(props: WflowEdgeProps) {
         >
           <CommonAddButton
             onClick={() => {
-              add(data.parentId);
+              addNodeByEdge(data.parentId);
             }}
           />
         </div>

@@ -99,6 +99,22 @@ export function generateEdge(config: {
   };
 }
 
+export function isEmptyNode(node: WorkflowNode) {
+  return !node.connectorCode;
+}
+
+export function isInnerBlock(block: FlowBlock) {
+  const { parent } = block;
+  if (!parent) return false;
+  if (isLoopBlock(parent)) {
+    return (parent as FlowLoopBlock).innerBlock === block;
+  }
+  if (isPathsBlock(parent)) {
+    return (parent as FlowPathsBlock).hasChild(block.id);
+  }
+  return false;
+}
+
 export function generateNode(config: { block: FlowBlock }): Node {
   const { block } = config;
   const { parent: parentBlock } = block;
@@ -108,7 +124,7 @@ export function generateNode(config: { block: FlowBlock }): Node {
   } = (() => {
     if (!parentBlock)
       return {
-        x: -block.w / 2,
+        x: 0, // -block.w / 2,
         y: 0,
       };
     if (isPathsBlock(parentBlock)) {
@@ -147,6 +163,13 @@ export function generateNode(config: { block: FlowBlock }): Node {
     };
   })();
 
+  let type = "placeholderNode";
+  if (isLoopBlock(block)) {
+    type = "loopNode";
+  } else if (!isEmptyNode(block.flowNodeData)) {
+    type = "workflowNode";
+  }
+
   return {
     id: block.id,
     data: {
@@ -158,7 +181,7 @@ export function generateNode(config: { block: FlowBlock }): Node {
     },
     position,
     parentId: parentBlock?.id,
-    type: isLoopBlock(block) ? "loopNode" : "workflowNode",
+    type,
     style: {
       visibility: "visible",
     },

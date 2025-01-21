@@ -17,3 +17,5 @@ interface WorkflowNode {
 
   outputsSchema?: any;
 }
+
+type WorkflowNodeData = Omit<WorkflowNode, "id" | "next" | "children">;

@@ -1,24 +1,17 @@
 import { FlowBlock } from "./FlowBlock";
 import { FlowPathRuleBlock } from "./FlowPathRuleBlock";
 import { EndNode, generateEdge, generateNode, ReactFlowData } from "./utils";
-import { generatePathRuleNode } from "./core/PathRuleConnector";
 export class FlowPathsBlock extends FlowBlock {
   children: FlowPathRuleBlock[] = [];
   innerMb: number = 50;
   oy: number = 30;
   childrenViewWidth: number = 0;
 
-  constructor(public nodeData: WorkflowNode, children?: FlowPathRuleBlock[]) {
+  constructor(public nodeData: WorkflowNode, children: FlowPathRuleBlock[]) {
     super(nodeData);
-    if (!children?.length) {
-      // 最少两个
-      this.addChild(new FlowPathRuleBlock(generatePathRuleNode()));
-      this.addChild(new FlowPathRuleBlock(generatePathRuleNode()));
-    } else {
-      children.forEach((child) => {
-        this.addChild(child);
-      });
-    }
+    children.forEach((child) => {
+      this.addChild(child);
+    });
   }
 
   hasChild(id: string) {

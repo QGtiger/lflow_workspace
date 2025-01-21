@@ -2,8 +2,16 @@ import { FlowBlock } from "./FlowBlock";
 import { RectInfer } from "./DisplayObject";
 import { FlowPathsBlock } from "./FlowPathsBlock";
 import { FlowPathRuleBlock } from "./FlowPathRuleBlock";
-import { isLoopNode, isPathRuleNode, isPathsNode, traceAll } from "./utils";
+import {
+  isLoopNode,
+  isPathRuleNode,
+  isPathsNode,
+  traceAll,
+  uuid,
+} from "./utils";
 import { FlowLoopBlock } from "./FlowLoopBlock";
+import { generatePathRuleNode } from "./core/PathRuleConnector";
+import { generateEmptyNode } from "./core";
 
 export class LayoutEngine {
   rootId?: string;
@@ -37,29 +45,34 @@ export class LayoutEngine {
     let item: FlowBlock;
     const { initialNodes } = this;
     if (isLoopNode(node)) {
-      if (!node.children?.length) {
-        throw new Error("循环 节点必须有 children");
-      }
-      this.flowBlockMap[node.id] = item = new FlowLoopBlock(
-        node,
-        this.transferWrokflowNodeToFlowBlock({
-          nodes: initialNodes,
-          startId: node.children[0],
-        })
-      );
-    } else if (isPathsNode(node)) {
-      if (!node.children) {
-        throw new Error("分支 节点必须有 children");
-      }
-      this.flowBlockMap[node.id] = item = new FlowPathsBlock(
-        node,
-        node.children.map((child) => {
-          return this.transferWrokflowNodeToFlowBlock({
+      // if (!node.children?.length) {
+      //   throw new Error("循环 节点必须有 children");
+      // }
+      const innerNodeId = node.children?.[0];
+      const innerBlock = innerNodeId
+        ? this.transferWrokflowNodeToFlowBlock({
             nodes: initialNodes,
-            startId: child,
-          });
-        })
-      );
+            startId: innerNodeId,
+          })
+        : this.generateBlock(generateEmptyNode());
+      this.flowBlockMap[node.id] = item = new FlowLoopBlock(node, innerBlock);
+    } else if (isPathsNode(node)) {
+      // if (!node.children) {
+      //   throw new Error("分支 节点必须有 children");
+      // }
+      const children = node.children?.length
+        ? node.children.map((child) => {
+            return this.transferWrokflowNodeToFlowBlock({
+              nodes: initialNodes,
+              startId: child,
+            });
+          })
+        : [
+            this.generateBlock(generatePathRuleNode()),
+            this.generateBlock(generatePathRuleNode()),
+          ];
+
+      this.flowBlockMap[node.id] = item = new FlowPathsBlock(node, children);
     } else if (isPathRuleNode(node)) {
       this.flowBlockMap[node.id] = item = new FlowPathRuleBlock(node);
     } else {
@@ -69,11 +82,27 @@ export class LayoutEngine {
     return item;
   }
 
-  createFlowBlock(node: WorkflowNode, parentId?: string): FlowBlock {
+  createFlowBlock(
+    node: WorkflowNode,
+    parentId?: string,
+    inner?: boolean
+  ): FlowBlock {
     const item = this.generateBlock(node);
     if (parentId) {
       const parentBlock = this.getBlockByCheckNodeExist(parentId);
-      parentBlock.setNext(item);
+
+      if (inner) {
+        if (parentBlock instanceof FlowLoopBlock) {
+          parentBlock.setInnerBlock(item);
+        } else if (parentBlock instanceof FlowPathsBlock) {
+          parentBlock.addChild(item);
+        }
+      } else {
+        parentBlock.setNext(item);
+      }
+    } else {
+      // 创建根节点
+      this.rootId = item.id;
     }
     return item;
   }

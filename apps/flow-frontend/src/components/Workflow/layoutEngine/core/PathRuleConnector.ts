@@ -9,6 +9,7 @@ export const PathRuleConnector: Connector = {
   logo: PathRuleLogo,
   version: "1.0.0",
   description: "路径规则",
+  hidden: true,
   actions: [
     {
       code: "rule",

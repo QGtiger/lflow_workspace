@@ -3,15 +3,12 @@ import { LayoutEngine } from "./layoutEngine";
 import { Edge, Node } from "@xyflow/react";
 import { queueEffectFn } from "./layoutEngine/queueTickFn";
 import { createStore } from "zustand";
-import { uuid } from "./layoutEngine/utils";
 import { debounce } from "lodash-es";
 
 interface LFStoreState {
   nodes: Node[];
   edges: Edge[];
-  addNewNode(parentId: string, nodeData?: WorkflowNode): void;
   deleteNode(id: string): void;
-  changeNodeData(id: string, data: Omit<WorkflowNode, "id">): void;
   layoutEngine: LayoutEngine;
   rerender(): void;
 
@@ -45,6 +42,7 @@ export function createLFStore(config: LFStoreConfig) {
     }
 
     function render() {
+      console.log("render");
       queueEffectFn(setNodesEdges);
     }
 
@@ -58,21 +56,8 @@ export function createLFStore(config: LFStoreConfig) {
       layoutEngine: engineIns,
       nodes: data.nodes,
       edges: data.edges,
-      addNewNode(parentId: string, nodeData?: WorkflowNode) {
-        engineIns.createFlowBlock(
-          nodeData || {
-            id: uuid(),
-          },
-          parentId
-        );
-        render();
-      },
       deleteNode(id) {
         engineIns.deleteFlowBlock(id);
-        render();
-      },
-      changeNodeData(id, data) {
-        engineIns.changeFlowBlockData(id, data);
         render();
       },
       strokeColor: "#98a2b3",

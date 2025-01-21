@@ -19,6 +19,9 @@ export default function useDelNode() {
           b.next.parent = parent;
         }
       }
+    } else {
+      // 删除根节点
+      layoutEngine.rootId = b.next?.id;
     }
     b.removeLink();
 

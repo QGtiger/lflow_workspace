@@ -5,10 +5,10 @@ import {
   XYPosition,
   useReactFlow,
 } from "@xyflow/react";
-import useNewNode from "../hooks/useNewNode";
 import { WflowEdgeProps } from "../layoutEngine/utils";
 import CommonAddButton from "./CommonAddButton";
 import useStrokeColor from "../hooks/useStrokeColor";
+import useFlowNode from "../hooks/useFlowNode";
 
 function getNodeEdgePoint(node: Node, x: number, y: number): XYPosition {
   const { type, position, width, height } = node;
@@ -83,7 +83,7 @@ export function EndflowEdge(props: WflowEdgeProps) {
   const { getNode } = useReactFlow();
   const sourceNode = getNode(source);
   const targetNode = getNode(target);
-  const addNode = useNewNode();
+  const { addNodeByEdge } = useFlowNode();
   const strokeColor = useStrokeColor();
 
   if (!sourceNode || !targetNode) {
@@ -116,7 +116,7 @@ export function EndflowEdge(props: WflowEdgeProps) {
         >
           <CommonAddButton
             onClick={() => {
-              addNode(data.parentId);
+              addNodeByEdge(data.parentId);
             }}
           />
         </div>

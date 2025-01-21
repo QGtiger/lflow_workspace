@@ -5,12 +5,11 @@ import { createLFStore, LFStore, LFStoreConfig, StoreContext } from "./model";
 import useLFStoreState from "./hooks/useLFStoreState";
 import edgeTypes from "./EdgeTypes";
 import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
-import useNewNode from "./hooks/useNewNode";
+import { ConnectorModel } from "./model/connectorModal";
 
 function WorkflowWrapper() {
   const { nodes, edges, layoutEngine } = useLFStoreState();
-  const addNewNode = useNewNode();
-
+  const { contextHolder } = ConnectorModel.useModel();
   const tt = layoutEngine.exportFlowNodes();
   console.log(tt);
 
@@ -33,7 +32,6 @@ function WorkflowWrapper() {
     ],
     handler: (params) => {
       const { parentId } = params;
-      addNewNode(parentId);
     },
   });
 
@@ -54,6 +52,7 @@ function WorkflowWrapper() {
       nodesDraggable={false}
     >
       <Background />
+      {contextHolder}
     </ReactFlow>
   );
 }
@@ -65,10 +64,12 @@ export default function Workflow(props: LFStoreConfig) {
   }
 
   return (
-    <StoreContext.Provider value={storeRef.current}>
-      <ReactFlowProvider>
-        <WorkflowWrapper />
-      </ReactFlowProvider>
-    </StoreContext.Provider>
+    <ConnectorModel.Provider>
+      <StoreContext.Provider value={storeRef.current}>
+        <ReactFlowProvider>
+          <WorkflowWrapper />
+        </ReactFlowProvider>
+      </StoreContext.Provider>
+    </ConnectorModel.Provider>
   );
 }

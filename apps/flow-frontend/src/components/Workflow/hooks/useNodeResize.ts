@@ -15,6 +15,7 @@ export default function useNodeResize() {
     if (isClose(b.w, size.w) && isClose(b.h, size.h)) return;
     if (!size.w || !size.h) return;
     b.setRect(size);
+    console.log("resize");
     rerender();
   }, []);
 

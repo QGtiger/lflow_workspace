@@ -6,10 +6,9 @@ export default function Lflow() {
     <div className=" relative h-full w-full">
       <Workflow
         flowNodes={[
-          // {
-          //   id: "root",
-          //   next: "1",
-          // },
+          {
+            id: "root",
+          },
           // {
           //   id: "1",
           //   next: "2",
@@ -21,26 +20,25 @@ export default function Lflow() {
           //   connectorCode: PathRuleCode,
           //   next: "Loop",
           // },
-          {
-            id: "Loop",
-            connectorCode: "Loop",
-            children: ["Loop-1"],
-            next: "Loop.next",
-          },
-          {
-            id: "Loop-1",
-            connectorCode: "Path",
-            children: ["Loop-1.pathRule1", "Loop-1.pathRule2"],
-          },
-          {
-            id: "Loop-1.pathRule1",
-            connectorCode: PathRuleCode,
-          },
-          {
-            id: "Loop-1.pathRule2",
-            connectorCode: PathRuleCode,
-          },
-
+          // {
+          //   id: "Loop",
+          //   connectorCode: "Loop",
+          //   children: ["Loop-1"],
+          //   next: "Loop.next",
+          // },
+          // {
+          //   id: "Loop-1",
+          //   connectorCode: "Path",
+          //   children: ["Loop-1.pathRule1", "Loop-1.pathRule2"],
+          // },
+          // {
+          //   id: "Loop-1.pathRule1",
+          //   connectorCode: PathRuleCode,
+          // },
+          // {
+          //   id: "Loop-1.pathRule2",
+          //   connectorCode: PathRuleCode,
+          // },
           // {
           //   id: "Loop.next",
           // },
@@ -53,7 +51,6 @@ export default function Lflow() {
           //   connectorCode: PathRuleCode,
           //   next: "1-2-1",
           // },
-
           // {
           //   id: "1-2-1",
           //   connectorCode: "Path",

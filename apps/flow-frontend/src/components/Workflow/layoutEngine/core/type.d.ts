@@ -5,6 +5,8 @@ interface Connector {
   version: string;
   description: string;
 
+  hidden?: boolean;
+
   actions: ConnectorAction[];
 }
 

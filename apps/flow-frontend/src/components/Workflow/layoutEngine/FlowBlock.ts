@@ -1,14 +1,10 @@
-import { Node } from "@xyflow/react";
 import { DisplayObject } from "./DisplayObject";
 import {
   generateEdge,
   generateNode,
-  isLoopBlock,
   isPathRuleBlock,
-  isPathsBlock,
   ReactFlowData,
 } from "./utils";
-import type { FlowLoopBlock } from "./FlowLoopBlock";
 
 export class FlowBlock extends DisplayObject {
   next?: FlowBlock;
@@ -30,6 +26,10 @@ export class FlowBlock extends DisplayObject {
       ...this.nodeData,
       next: this.next?.id,
     };
+  }
+
+  set flowNodeData(node: WorkflowNodeData) {
+    Object.assign(this.nodeData, node);
   }
 
   setLastNext(block: FlowBlock) {

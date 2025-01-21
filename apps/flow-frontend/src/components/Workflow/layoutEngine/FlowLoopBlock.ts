@@ -1,4 +1,3 @@
-import { generateEmptyNode } from "./core";
 import { FlowBlock } from "./FlowBlock";
 import {
   EndNode,
@@ -14,9 +13,9 @@ export class FlowLoopBlock extends FlowBlock {
   // 左右padding
   padding: number = 40;
 
-  constructor(public nodeData: WorkflowNode, innerBlock?: FlowBlock) {
+  constructor(public nodeData: WorkflowNode, innerBlock: FlowBlock) {
     super(nodeData);
-    this.setInnerBlock(innerBlock || new FlowBlock(generateEmptyNode()));
+    this.setInnerBlock(innerBlock);
   }
 
   setInnerBlock(block?: FlowBlock, replace?: boolean) {

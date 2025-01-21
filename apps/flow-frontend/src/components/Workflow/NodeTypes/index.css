@@ -49,3 +49,9 @@
     rgb(239, 241, 243) 90%
   );
 }
+
+.placeholder-node {
+  border: 1px dashed #bbb;
+  color: #bbb;
+  box-shadow: none;
+}
