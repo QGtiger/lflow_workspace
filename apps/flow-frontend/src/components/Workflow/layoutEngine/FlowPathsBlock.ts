@@ -1,6 +1,6 @@
 import { FlowBlock } from "./FlowBlock";
 import { FlowPathRuleBlock } from "./FlowPathRuleBlock";
-import { EndNode, generateEdge, ReactFlowData } from "./utils";
+import { EndNode, generateEdge, generateNode, ReactFlowData } from "./utils";
 import { generatePathRuleNode } from "./core/PathRuleConnector";
 export class FlowPathsBlock extends FlowBlock {
   children: FlowPathRuleBlock[] = [];
@@ -8,11 +8,8 @@ export class FlowPathsBlock extends FlowBlock {
   oy: number = 30;
   childrenViewWidth: number = 0;
 
-  constructor(
-    public flowNodeData: WorkflowNode,
-    children?: FlowPathRuleBlock[]
-  ) {
-    super(flowNodeData);
+  constructor(public nodeData: WorkflowNode, children?: FlowPathRuleBlock[]) {
+    super(nodeData);
     if (!children?.length) {
       // 最少两个
       this.addChild(new FlowPathRuleBlock(generatePathRuleNode()));
@@ -87,8 +84,34 @@ export class FlowPathsBlock extends FlowBlock {
     };
   }
 
+  get flowNodeData(): WorkflowNode {
+    return {
+      ...this.nodeData,
+      next: this.next?.id,
+      children: this.children.map((t) => t.id),
+    };
+  }
+
+  /**
+   * 导出 flowNodes
+   */
+  exportFlowNodes(): WorkflowNode[] {
+    return Array.prototype.concat.call(
+      [],
+      this.flowNodeData,
+      ...this.children.reduce((res, cur) => {
+        res.push(...cur.exportFlowNodes());
+        return res;
+      }, [] as WorkflowNode[]),
+      this.next?.exportFlowNodes() || []
+    );
+  }
+
   exportReactFlowDataByFlowBlock(index: number = 1): ReactFlowData {
     this.index = index;
+    const currNode = generateNode({
+      block: this,
+    });
     const childrenNodes = this.children.reduce(
       (acc, curr) => {
         const d = curr.exportReactFlowDataByFlowBlock(acc.preIndex);
@@ -127,7 +150,7 @@ export class FlowPathsBlock extends FlowBlock {
 
     const nodes = Array.prototype.concat.call(
       [],
-      this.getNodeData(),
+      currNode,
       childrenNodes.nodes,
       endNode,
       nextBlockData.nodes

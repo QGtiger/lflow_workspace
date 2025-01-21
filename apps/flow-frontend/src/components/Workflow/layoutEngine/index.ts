@@ -22,7 +22,10 @@ export class LayoutEngine {
     block.setRect(size);
   }
 
-  getBlockByCheckNodeExist(id: string) {
+  getBlockByCheckNodeExist(id?: string) {
+    if (!id) {
+      throw new Error("id is required");
+    }
     const block = this.flowBlockMap[id];
     if (!block) {
       throw new Error(`node ${id} not found`);
@@ -132,5 +135,10 @@ export class LayoutEngine {
     //   realParentId: this.rootId,
     // };
     return { nodes, edges, endNode };
+  }
+
+  exportFlowNodes() {
+    const b = this.getBlockByCheckNodeExist(this.rootId);
+    return b.exportFlowNodes();
   }
 }

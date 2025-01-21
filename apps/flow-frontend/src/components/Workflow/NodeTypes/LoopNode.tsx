@@ -7,7 +7,7 @@ import { useResizeObserver } from "../layoutEngine/useResizeObserver";
 function LoopNode(props: WorkflowNodeProps) {
   const {
     id,
-    data: { vw, vh, label },
+    data: { vw, vh, label, index },
   } = props;
   const nodeRef = useRef<HTMLDivElement>(null);
   const nodeResize = useNodeResize();
@@ -46,7 +46,7 @@ function LoopNode(props: WorkflowNodeProps) {
             width: `calc(100% + 2px)`,
           }}
         >
-          {label}
+          {index}.{label}
         </div>
       </div>
       <div

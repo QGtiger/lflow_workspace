@@ -40,7 +40,7 @@ export function createLFStore(config: LFStoreConfig) {
           transition: "all 200ms ease-in-out",
         },
       }));
-      console.log(nodesWithTransition);
+      // console.log(nodesWithTransition);
       set({ nodes: nodesWithTransition, edges: data.edges });
     }
 

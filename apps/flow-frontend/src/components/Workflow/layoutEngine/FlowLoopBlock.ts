@@ -1,6 +1,12 @@
 import { generateEmptyNode } from "./core";
 import { FlowBlock } from "./FlowBlock";
-import { EndNode, generateEdge, ReactFlowData, traceBlock } from "./utils";
+import {
+  EndNode,
+  generateEdge,
+  generateNode,
+  ReactFlowData,
+  traceBlock,
+} from "./utils";
 
 export class FlowLoopBlock extends FlowBlock {
   innerBlock?: FlowBlock;
@@ -8,8 +14,8 @@ export class FlowLoopBlock extends FlowBlock {
   // 左右padding
   padding: number = 40;
 
-  constructor(public flowNodeData: WorkflowNode, innerBlock?: FlowBlock) {
-    super(flowNodeData);
+  constructor(public nodeData: WorkflowNode, innerBlock?: FlowBlock) {
+    super(nodeData);
     this.setInnerBlock(innerBlock || new FlowBlock(generateEmptyNode()));
   }
 
@@ -76,6 +82,26 @@ export class FlowLoopBlock extends FlowBlock {
     };
   }
 
+  get flowNodeData(): WorkflowNode {
+    return {
+      ...this.nodeData,
+      next: this.next?.id,
+      children: this.innerBlock ? [this.innerBlock.id] : [],
+    };
+  }
+
+  /**
+   * 导出 flowNodes
+   */
+  exportFlowNodes(): WorkflowNode[] {
+    return Array.prototype.concat.call(
+      [],
+      this.flowNodeData,
+      this.innerBlock?.exportFlowNodes() || [],
+      this.next?.exportFlowNodes() || []
+    );
+  }
+
   exportReactFlowDataByFlowBlock(index: number = 1): ReactFlowData {
     if (!this.innerBlock) {
       throw new Error("innerBlock is required");
@@ -88,8 +114,8 @@ export class FlowLoopBlock extends FlowBlock {
       index + 1
     );
 
-    const currNode = this.getNodeData({
-      type: "LoopNode",
+    const currNode = generateNode({
+      block: this,
     });
 
     const nextBlockData = this.next?.exportReactFlowDataByFlowBlock(

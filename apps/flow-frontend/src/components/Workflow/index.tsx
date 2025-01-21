@@ -8,17 +8,22 @@ import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
 import useNewNode from "./hooks/useNewNode";
 
 function WorkflowWrapper() {
-  const { nodes, edges } = useLFStoreState();
+  const { nodes, edges, layoutEngine } = useLFStoreState();
   const addNewNode = useNewNode();
 
+  const tt = layoutEngine.exportFlowNodes();
+  console.log(tt);
+
   useCopilotReadable({
-    description: "当前流程的连接器数据",
-    value: nodes.filter((node) => node.type !== "endflowNode"),
+    description:
+      "当前流程的连接器数据, 数据结构中 index 表示节点在流程中的索引值",
+    value: tt,
   });
 
   useCopilotAction({
     name: "addNode",
-    description: "添加节点，需要用户提供父节点id",
+    description:
+      "添加节点，需要用户提供父节点id，或者给索引值，你推导出具体的id",
     parameters: [
       {
         name: "parentId",

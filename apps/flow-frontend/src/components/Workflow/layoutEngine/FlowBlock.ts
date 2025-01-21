@@ -2,6 +2,7 @@ import { Node } from "@xyflow/react";
 import { DisplayObject } from "./DisplayObject";
 import {
   generateEdge,
+  generateNode,
   isLoopBlock,
   isPathRuleBlock,
   isPathsBlock,
@@ -20,8 +21,15 @@ export class FlowBlock extends DisplayObject {
     return this.flowNodeData.id;
   }
 
-  constructor(public flowNodeData: WorkflowNode) {
+  constructor(public nodeData: WorkflowNode) {
     super();
+  }
+
+  get flowNodeData(): WorkflowNode {
+    return {
+      ...this.nodeData,
+      next: this.next?.id,
+    };
   }
 
   setLastNext(block: FlowBlock) {
@@ -79,44 +87,21 @@ export class FlowBlock extends DisplayObject {
     return this.w;
   }
 
-  getNodeData(opt?: { type?: string }): Node {
-    const { id, parent: parentBlock } = this;
-    const ph = (() => {
-      if (!parentBlock) return 0;
-      if (isPathsBlock(parentBlock)) {
-        return parentBlock.queryViewHeight();
-      }
-      if (isLoopBlock(parentBlock)) {
-        if ((parentBlock as FlowLoopBlock).innerBlock === this) {
-          return parentBlock.h;
-        }
-        return parentBlock.queryViewHeight();
-      }
-      return parentBlock.h;
-    })();
-    return {
-      id: this.id,
-      data: {
-        label: id,
-        nodeData: this.flowNodeData,
-        vh: this.queryViewHeight(),
-        vw: this.queryViewWidth(),
-        index: this.index,
-      },
-      parentId: parentBlock?.id,
-      position: {
-        x: parentBlock ? (parentBlock.w - this.w) / 2 : -this.w / 2,
-        y: parentBlock ? parentBlock.mb + ph : 0,
-      },
-      type: opt?.type || "workflowNode",
-      style: {
-        visibility: "visible",
-      },
-    };
+  /**
+   * 导出 flowNodes
+   */
+  exportFlowNodes(): WorkflowNode[] {
+    return Array.prototype.concat.call(
+      [],
+      this.flowNodeData,
+      this.next?.exportFlowNodes() || []
+    );
   }
 
   exportReactFlowDataByFlowBlock(index: number = 1): ReactFlowData {
-    const currNode = this.getNodeData();
+    const currNode = generateNode({
+      block: this,
+    });
     this.index = index;
     const nextBlockData = this.next?.exportReactFlowDataByFlowBlock(
       index + 1

@@ -8,7 +8,7 @@ import LoopNode from "./LoopNode";
 const nodeTypes: NodeTypes = {
   workflowNode: WorkflowNode,
   endflowNode: EndFlowNode,
-  LoopNode,
+  loopNode: LoopNode,
 };
 
 export default nodeTypes;

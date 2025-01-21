@@ -4,6 +4,7 @@ import type { FlowPathsBlock } from "./FlowPathsBlock";
 import { LoopNodeCode } from "./core/LoopConnector";
 import { PathRuleCode } from "./core/PathRuleConnector";
 import { PathsNodeCode } from "./core/PathsConnector";
+import type { FlowLoopBlock } from "./FlowLoopBlock";
 
 export type EndNode = Node & { realParentId?: string };
 
@@ -92,6 +93,72 @@ export function generateEdge(config: {
     data: {
       parentId: (sourceNode as any).realParentId || sourceNode.id,
     },
+    style: {
+      visibility: "visible",
+    },
+  };
+}
+
+export function generateNode(config: { block: FlowBlock }): Node {
+  const { block } = config;
+  const { parent: parentBlock } = block;
+  const position: {
+    x: number;
+    y: number;
+  } = (() => {
+    if (!parentBlock)
+      return {
+        x: -block.w / 2,
+        y: 0,
+      };
+    if (isPathsBlock(parentBlock)) {
+      if (isPathRuleBlock(block)) {
+        const pathBlock = parentBlock as FlowPathsBlock;
+        pathBlock.queryViewWidth();
+
+        const vw = pathBlock.childrenViewWidth;
+        let w = (pathBlock.w - vw) / 2;
+        const index = pathBlock.children.indexOf(block);
+        for (let i = 0; i < index; i++) {
+          w += pathBlock.children[i].queryViewWidth() + pathBlock.oy;
+        }
+        return {
+          x: w + (block.queryViewWidth() - block.w) / 2,
+          y: pathBlock.innerMb + pathBlock.h,
+        };
+      } else {
+        return {
+          x: (parentBlock.w - block.w) / 2,
+          y: parentBlock.mb + parentBlock.queryViewHeight(),
+        };
+      }
+    }
+    if (isLoopBlock(parentBlock)) {
+      if ((parentBlock as FlowLoopBlock).innerBlock !== block) {
+        return {
+          x: (parentBlock.w - block.w) / 2,
+          y: parentBlock.mb + parentBlock.queryViewHeight(),
+        };
+      }
+    }
+    return {
+      x: (parentBlock.w - block.w) / 2,
+      y: parentBlock.mb + parentBlock.h,
+    };
+  })();
+
+  return {
+    id: block.id,
+    data: {
+      label: block.id,
+      nodeData: block.flowNodeData,
+      vw: block.queryViewWidth(),
+      vh: block.queryViewHeight(),
+      index: block.index,
+    },
+    position,
+    parentId: parentBlock?.id,
+    type: isLoopBlock(block) ? "loopNode" : "workflowNode",
     style: {
       visibility: "visible",
     },
