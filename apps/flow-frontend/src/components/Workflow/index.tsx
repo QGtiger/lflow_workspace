@@ -11,7 +11,7 @@ function WorkflowWrapper() {
   const { nodes, edges, layoutEngine } = useLFStoreState();
   const { contextHolder } = ConnectorModel.useModel();
   const tt = layoutEngine.exportFlowNodes();
-  console.log(tt);
+  const { setSelectedId } = useLFStoreState();
 
   useCopilotReadable({
     description:
@@ -50,6 +50,12 @@ function WorkflowWrapper() {
       // If you want to enable deletion of nodes, you need to make sure that you only have one root node in your graph.
       deleteKeyCode={null}
       nodesDraggable={false}
+      onNodeClick={(event, node) => {
+        setSelectedId(node.id);
+      }}
+      onNodeContextMenu={(event, node) => {
+        setSelectedId(node.id);
+      }}
     >
       <Background />
       {contextHolder}

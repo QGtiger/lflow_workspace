@@ -13,6 +13,8 @@ interface LFStoreState {
   rerender(): void;
 
   strokeColor: string;
+  selectedId: string;
+  setSelectedId(id: string): void;
 }
 
 export type LFStore = ReturnType<typeof createLFStore>;
@@ -61,6 +63,10 @@ export function createLFStore(config: LFStoreConfig) {
         render();
       },
       strokeColor: "#98a2b3",
+      selectedId: "",
+      setSelectedId(id) {
+        set({ selectedId: id });
+      },
     };
   });
 
