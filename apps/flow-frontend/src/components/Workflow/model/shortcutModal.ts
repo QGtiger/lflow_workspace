@@ -1,6 +1,6 @@
 import { createCustomModel } from "@/common/createModel";
 import { useKeyPress } from "ahooks";
-import { isPathRuleNode } from "../layoutEngine/utils";
+import { isLoopNode, isPathRuleNode } from "../layoutEngine/utils";
 import { MenuProps, message } from "antd";
 import useFlowNode from "../hooks/useFlowNode";
 import useDelNode from "../hooks/useDelNode";
@@ -151,7 +151,7 @@ export const ShortcutModal = createCustomModel(() => {
         label: "粘贴至节点内",
         key: "paste-inner",
         extra: "⌘I",
-        hidden: !isLoopNodeById(flowNode.id),
+        hidden: !isLoopNode(flowNode),
       },
       {
         type: "divider",

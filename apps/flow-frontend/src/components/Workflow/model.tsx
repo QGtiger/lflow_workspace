@@ -33,7 +33,7 @@ export function createLFStore(config: LFStoreConfig) {
     function setNodesEdges() {
       console.log("generate");
       const data = engineIns.exportReactFlowData();
-      engineIns.exportFlowNodes();
+      const flowNodes = engineIns.exportFlowNodes();
       const nodesWithTransition = data.nodes.map((node) => ({
         ...node,
         style: {
@@ -41,7 +41,7 @@ export function createLFStore(config: LFStoreConfig) {
           transition: "all 200ms ease-in-out",
         },
       }));
-      // console.log(nodesWithTransition);
+      console.log(flowNodes);
       set({ nodes: nodesWithTransition, edges: data.edges });
     }
 
