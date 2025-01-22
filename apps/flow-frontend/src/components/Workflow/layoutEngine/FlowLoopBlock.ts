@@ -3,6 +3,7 @@ import {
   EndNode,
   generateEdge,
   generateNode,
+  isEmptyNode,
   ReactFlowData,
   traceBlock,
 } from "./utils";
@@ -20,7 +21,8 @@ export class FlowLoopBlock extends FlowBlock {
 
   setInnerBlock(block?: FlowBlock, replace?: boolean) {
     if (this.innerBlock) {
-      if (replace) {
+      // 如果 innerBlock 为空，则直接移除
+      if (replace || isEmptyNode(this.innerBlock.flowNodeData)) {
         this.innerBlock.removeLink();
       } else {
         block?.setLastNext(this.innerBlock);

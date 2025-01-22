@@ -15,7 +15,11 @@ export default function useDelNode() {
         parent.setInnerBlock(b.next, true);
         // 只有一个节点，则添加一个空节点
         if (!b.next && autoAddEmptyNode) {
-          layoutEngine.createFlowBlock(generateEmptyNode(), parent.id, true);
+          layoutEngine.createFlowBlock({
+            node: generateEmptyNode(),
+            parentId: parent.id,
+            inner: true,
+          });
         }
       } else if (parent instanceof FlowPathsBlock && parent.hasChild(id)) {
         parent.removeChild(b);
@@ -32,6 +36,9 @@ export default function useDelNode() {
     } else {
       // 删除根节点
       layoutEngine.rootId = b.next?.id;
+      if (b.next) {
+        b.next.parent = undefined;
+      }
     }
     b.removeLink();
 

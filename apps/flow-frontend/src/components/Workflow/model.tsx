@@ -1,17 +1,17 @@
 import { createContext } from "react";
 import { LayoutEngine } from "./layoutEngine";
-import { Edge, Node } from "@xyflow/react";
 import { queueEffectFn } from "./layoutEngine/queueTickFn";
 import { createStore } from "zustand";
 import { debounce } from "lodash-es";
+import { WflowEdge, WflowNode } from "./layoutEngine/utils";
 
 interface LFStoreState {
-  nodes: Node[];
-  edges: Edge[];
+  nodes: WflowNode[];
+  edges: WflowEdge[];
   deleteNode(id: string): void;
   layoutEngine: LayoutEngine;
   rerender(): void;
-
+  macroRender(): void;
   strokeColor: string;
   selectedId: string;
   setSelectedId(id: string): void;
@@ -31,7 +31,9 @@ export function createLFStore(config: LFStoreConfig) {
   console.log(data, engineIns.flowBlockMap[engineIns.rootId!]);
   const store = createStore<LFStoreState>((set) => {
     function setNodesEdges() {
+      console.log("generate");
       const data = engineIns.exportReactFlowData();
+      engineIns.exportFlowNodes();
       const nodesWithTransition = data.nodes.map((node) => ({
         ...node,
         style: {
@@ -44,17 +46,18 @@ export function createLFStore(config: LFStoreConfig) {
     }
 
     function render() {
-      console.log("render");
       queueEffectFn(setNodesEdges);
     }
 
     // @ts-nocheck
-    const rerender = debounce(setNodesEdges, 0);
+    const macroRender = debounce(setNodesEdges, 0);
 
     setNodesEdges();
 
     return {
       rerender: render,
+      // 宏任务渲染
+      macroRender,
       layoutEngine: engineIns,
       nodes: data.nodes,
       edges: data.edges,

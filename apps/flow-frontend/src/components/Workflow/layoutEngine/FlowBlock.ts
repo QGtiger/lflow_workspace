@@ -99,10 +99,10 @@ export class FlowBlock extends DisplayObject {
   }
 
   exportReactFlowDataByFlowBlock(index: number = 1): ReactFlowData {
+    this.index = index;
     const currNode = generateNode({
       block: this,
     });
-    this.index = index;
     const nextBlockData = this.next?.exportReactFlowDataByFlowBlock(
       index + 1
     ) || {

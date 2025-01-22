@@ -86,7 +86,12 @@ export function isLoopBlock(block: FlowBlock) {
 }
 
 export function generateEdge(config: {
-  sourceNode: WflowNode;
+  sourceNode: {
+    id: string;
+    data?: {
+      nodeData: WorkflowNode;
+    };
+  };
   targetNode: WflowNode;
   type?: string;
 }): WflowEdge {

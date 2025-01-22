@@ -6,34 +6,41 @@ import useLFStoreState from "./hooks/useLFStoreState";
 import edgeTypes from "./EdgeTypes";
 import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
 import { ConnectorModel } from "./model/connectorModal";
+import { ShortcutModal } from "./model/shortcutModal";
+import { WflowNode } from "./layoutEngine/utils";
 
 function WorkflowWrapper() {
   const { nodes, edges, layoutEngine } = useLFStoreState();
   const { contextHolder } = ConnectorModel.useModel();
-  const tt = layoutEngine.exportFlowNodes();
   const { setSelectedId } = useLFStoreState();
+  // const tt = layoutEngine.exportFlowNodes();
 
-  useCopilotReadable({
-    description:
-      "当前流程的连接器数据, 数据结构中 index 表示节点在流程中的索引值",
-    value: tt,
-  });
+  // useCopilotReadable({
+  //   description:
+  //     "当前流程的连接器数据, 数据结构中 index 表示节点在流程中的索引值",
+  //   value: tt,
+  // });
 
-  useCopilotAction({
-    name: "addNode",
-    description:
-      "添加节点，需要用户提供父节点id，或者给索引值，你推导出具体的id",
-    parameters: [
-      {
-        name: "parentId",
-        description: "父节点id",
-        type: "string",
-      },
-    ],
-    handler: (params) => {
-      const { parentId } = params;
-    },
-  });
+  // useCopilotAction({
+  //   name: "addNode",
+  //   description:
+  //     "添加节点，需要用户提供父节点id，或者给索引值，你推导出具体的id",
+  //   parameters: [
+  //     {
+  //       name: "parentId",
+  //       description: "父节点id",
+  //       type: "string",
+  //     },
+  //   ],
+  //   handler: (params) => {
+  //     const { parentId } = params;
+  //   },
+  // });
+
+  const selectNode = (node: WflowNode) => {
+    if (!node.data.nodeData.connectorCode) return;
+    setSelectedId(node.id);
+  };
 
   return (
     <ReactFlow
@@ -51,10 +58,10 @@ function WorkflowWrapper() {
       deleteKeyCode={null}
       nodesDraggable={false}
       onNodeClick={(event, node) => {
-        setSelectedId(node.id);
+        selectNode(node);
       }}
       onNodeContextMenu={(event, node) => {
-        setSelectedId(node.id);
+        selectNode(node);
       }}
     >
       <Background />
@@ -72,9 +79,11 @@ export default function Workflow(props: LFStoreConfig) {
   return (
     <ConnectorModel.Provider>
       <StoreContext.Provider value={storeRef.current}>
-        <ReactFlowProvider>
-          <WorkflowWrapper />
-        </ReactFlowProvider>
+        <ShortcutModal.Provider>
+          <ReactFlowProvider>
+            <WorkflowWrapper />
+          </ReactFlowProvider>
+        </ShortcutModal.Provider>
       </StoreContext.Provider>
     </ConnectorModel.Provider>
   );

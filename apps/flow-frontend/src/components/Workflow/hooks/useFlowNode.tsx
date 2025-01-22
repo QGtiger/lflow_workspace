@@ -3,7 +3,12 @@ import { ConnectorModel } from "../model/connectorModal";
 import useLFStoreState from "./useLFStoreState";
 import { useDebounceFn } from "ahooks";
 import { useState, useRef } from "react";
-import { isInnerBlock, uuid } from "../layoutEngine/utils";
+import {
+  isInnerBlock,
+  isLoopBlock,
+  isPathsBlock,
+  uuid,
+} from "../layoutEngine/utils";
 import useDelNode from "./useDelNode";
 
 function AddNodeModal({
@@ -99,14 +104,15 @@ export default function useFlowNode() {
     inner?: boolean;
   }) => {
     const { parentId, connector, inner } = options;
-    layoutEngine.createFlowBlock(
-      {
+    layoutEngine.createFlowBlock({
+      node: {
         ...generateNodeDataByConnector(connector),
         id: uuid(),
       },
       parentId,
-      inner
-    );
+      inner,
+      isResetRoot: true,
+    });
     rerender();
   };
 
@@ -135,6 +141,17 @@ export default function useFlowNode() {
     return ins;
   };
 
+  const duplicateNode = (id: string) => {
+    const block = layoutEngine.getBlockByCheckNodeExist(id);
+    layoutEngine.createFlowBlock({
+      node: block.flowNodeData,
+      parentId: id,
+      inner: false,
+      forceWithId: true,
+    });
+    rerender();
+  };
+
   const addNodeByEdge = (parentId: string, inner?: boolean) => {
     const ins = createModal({
       title: "添加节点",
@@ -154,8 +171,23 @@ export default function useFlowNode() {
     return ins;
   };
 
+  const isComplexBlock = (id: string) => {
+    const block = layoutEngine.getBlockByCheckNodeExist(id);
+    return isPathsBlock(block) || isLoopBlock(block);
+  };
+
   return {
     replaceNode,
     addNodeByEdge,
+    duplicateNode,
+    isComplexBlock,
+    isLoopNodeById(id: string) {
+      const block = layoutEngine.getBlockByCheckNodeExist(id);
+      return isLoopBlock(block);
+    },
+    isPathNodeById(id: string) {
+      const block = layoutEngine.getBlockByCheckNodeExist(id);
+      return isPathsBlock(block);
+    },
   };
 }

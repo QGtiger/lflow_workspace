@@ -8,14 +8,13 @@ function isClose(a: number, b: number) {
 }
 
 export default function useNodeResize() {
-  const { layoutEngine, rerender } = useLFStoreState();
+  const { layoutEngine, rerender, macroRender } = useLFStoreState();
 
   const nodeResize = useCallback((id: string, size: RectInfer) => {
     const b = layoutEngine.getBlockByCheckNodeExist(id);
     if (isClose(b.w, size.w) && isClose(b.h, size.h)) return;
     if (!size.w || !size.h) return;
     b.setRect(size);
-    console.log("resize");
     rerender();
   }, []);
 
