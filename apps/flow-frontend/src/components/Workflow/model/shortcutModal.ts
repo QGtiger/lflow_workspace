@@ -12,7 +12,8 @@ import useFlowEngine from "../hooks/useFlowEngine";
 type MenuItemType = NonNullable<MenuProps["items"]>[number];
 
 export const ShortcutModal = createCustomModel(() => {
-  const { replaceNode, duplicateNode, isLoopNodeById } = useFlowNode();
+  const { replaceNode, duplicateNode, isLoopNodeById, isPathRuleNodeById } =
+    useFlowNode();
   const del = useDelNode();
   const { selectedId, rerender } = useLFStoreState();
   const {
@@ -29,6 +30,9 @@ export const ShortcutModal = createCustomModel(() => {
       return message.info("请先选择节点");
     }
 
+    if (isPathRuleNodeById(selectedId)) {
+      return message.error("路径规则节点不能克隆");
+    }
     duplicateNode(selectedId);
     message.success("克隆成功");
   });
@@ -37,6 +41,9 @@ export const ShortcutModal = createCustomModel(() => {
     e.preventDefault();
     if (!selectedId) {
       return message.info("请先选择节点");
+    }
+    if (isPathRuleNodeById(selectedId)) {
+      return message.error("路径规则节点不能复制");
     }
     clipboardDataRef.current = generateBlock(
       getBlockByCheckNodeExist(selectedId).flowNodeData
@@ -53,6 +60,9 @@ export const ShortcutModal = createCustomModel(() => {
     }
     if (!clipboardDataRef.current?.length) {
       return message.info("请先复制节点");
+    }
+    if (isPathRuleNodeById(selectedId)) {
+      return message.error("路径规则节点不能粘贴");
     }
 
     insetBlockById({

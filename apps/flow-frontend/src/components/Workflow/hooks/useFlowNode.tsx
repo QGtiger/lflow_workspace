@@ -6,6 +6,7 @@ import { useState, useRef } from "react";
 import {
   isInnerBlock,
   isLoopBlock,
+  isPathRuleBlock,
   isPathsBlock,
   uuid,
 } from "../layoutEngine/utils";
@@ -188,6 +189,10 @@ export default function useFlowNode() {
     isPathNodeById(id: string) {
       const block = layoutEngine.getBlockByCheckNodeExist(id);
       return isPathsBlock(block);
+    },
+    isPathRuleNodeById(id: string) {
+      const block = layoutEngine.getBlockByCheckNodeExist(id);
+      return isPathRuleBlock(block);
     },
   };
 }
