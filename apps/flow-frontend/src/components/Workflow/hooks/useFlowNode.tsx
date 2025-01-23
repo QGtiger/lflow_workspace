@@ -1,4 +1,4 @@
-import { Empty, Input } from "antd";
+import { Empty, Input, message } from "antd";
 import { ConnectorModel } from "../model/connectorModal";
 import useLFStoreState from "./useLFStoreState";
 import { useDebounceFn } from "ahooks";
@@ -11,6 +11,7 @@ import {
   uuid,
 } from "../layoutEngine/utils";
 import useDelNode from "./useDelNode";
+import useFlowEngine from "./useFlowEngine";
 
 function AddNodeModal({
   onItemClick,
@@ -98,6 +99,7 @@ export default function useFlowNode() {
   const { layoutEngine, rerender } = useLFStoreState();
   const { createModal } = ConnectorModel.useModel();
   const delNode = useDelNode();
+  const { getBlockByCheckNodeExist, generateBlock } = useFlowEngine();
 
   const addConnectorNode = (options: {
     parentId?: string;
@@ -142,15 +144,35 @@ export default function useFlowNode() {
     return ins;
   };
 
-  const duplicateNode = (id: string) => {
-    const block = layoutEngine.getBlockByCheckNodeExist(id);
-    layoutEngine.createFlowBlock({
-      node: block.flowNodeData,
-      parentId: id,
-      inner: false,
-      forceWithId: true,
+  const duplicateNode = async (id: string) => {
+    return new Promise((resolve, reject) => {
+      const block = layoutEngine.getBlockByCheckNodeExist(id);
+      if (isPathRuleBlock(block)) {
+        return reject("路径规则节点不能克隆");
+      }
+      layoutEngine.createFlowBlock({
+        node: block.flowNodeData,
+        parentId: id,
+        inner: false,
+        forceWithId: true,
+      });
+      rerender();
+      resolve(true);
     });
-    rerender();
+  };
+
+  const copyNode = (id: string) => {
+    return new Promise<WorkflowNode[]>((resolve, reject) => {
+      const block = layoutEngine.getBlockByCheckNodeExist(id);
+      if (isPathRuleBlock(block)) {
+        return reject("路径规则节点不能复制");
+      }
+      resolve(
+        generateBlock(
+          getBlockByCheckNodeExist(id).flowNodeData
+        ).exportFlowNodes()
+      );
+    });
   };
 
   const addNodeByEdge = (parentId: string, inner?: boolean) => {
@@ -194,5 +216,6 @@ export default function useFlowNode() {
       const block = layoutEngine.getBlockByCheckNodeExist(id);
       return isPathRuleBlock(block);
     },
+    copyNode,
   };
 }
