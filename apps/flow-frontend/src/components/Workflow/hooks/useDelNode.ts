@@ -2,19 +2,24 @@ import { generateEmptyNode } from "../layoutEngine/core";
 import { generatePathRuleNode } from "../layoutEngine/core/PathRuleConnector";
 import { FlowLoopBlock } from "../layoutEngine/FlowLoopBlock";
 import { FlowPathsBlock } from "../layoutEngine/FlowPathsBlock";
+import { UndoRedoModel } from "../model/UndoRedoModel";
 import useLFStoreState from "./useLFStoreState";
 
 export default function useDelNode() {
   const { layoutEngine, rerender } = useLFStoreState();
+  const { takeSnapshot } = UndoRedoModel.useModel();
 
   return (id: string, autoAddEmptyNode?: boolean) => {
+    takeSnapshot("删除节点");
+
     const b = layoutEngine.getBlockByCheckNodeExist(id);
     const { parent } = b;
     if (parent) {
       if (parent instanceof FlowLoopBlock && parent.innerBlock === b) {
+        const hasNext = !!b.next;
         parent.setInnerBlock(b.next, true);
         // 只有一个节点，则添加一个空节点
-        if (!b.next && autoAddEmptyNode) {
+        if (!hasNext && autoAddEmptyNode) {
           layoutEngine.createFlowBlock({
             node: generateEmptyNode(),
             parentId: parent.id,

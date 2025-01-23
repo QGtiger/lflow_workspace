@@ -1,4 +1,4 @@
-import { memo, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import { Handle, Position } from "@xyflow/react";
 import { WorkflowNodeProps } from "../layoutEngine/utils";
 import useFlowNode from "../hooks/useFlowNode";
@@ -8,9 +8,17 @@ import { useResizeObserver } from "../layoutEngine/useResizeObserver";
 const PlaceholderNode = (props: WorkflowNodeProps) => {
   const { replaceNode } = useFlowNode();
 
-  const { id } = props;
+  const { id, width, height } = props;
   const nodeRef = useRef<HTMLDivElement>(null);
   const nodeResize = useNodeResize();
+
+  useEffect(() => {
+    if (!id || !width || !height) return;
+    nodeResize(id, {
+      w: width,
+      h: height,
+    });
+  }, [width, height]);
 
   useResizeObserver(nodeRef, (entry) => {
     if (!id) return;

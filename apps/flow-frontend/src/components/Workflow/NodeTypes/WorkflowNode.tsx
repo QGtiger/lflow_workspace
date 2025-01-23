@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Handle, Position } from "@xyflow/react";
 import cx from "classnames";
 
@@ -12,10 +12,18 @@ const WorkflowNode = (props: WorkflowNodeProps) => {
   // see the hook implementation for details of the click handler
   // calling onClick adds a child node to this node
   // const onClick = useNodeClickHandler(id);
-  const { id, data } = props;
+  const { id, data, width, height } = props;
   const { selectedId } = useLFStoreState();
   const nodeRef = useRef<HTMLDivElement>(null);
   const nodeResize = useNodeResize();
+
+  useEffect(() => {
+    if (!id || !width || !height) return;
+    nodeResize(id, {
+      w: width,
+      h: height,
+    });
+  }, [width, height]);
 
   useResizeObserver(nodeRef, (entry) => {
     if (!id) return;

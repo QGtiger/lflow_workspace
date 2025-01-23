@@ -1,5 +1,5 @@
 import { Background, ReactFlow, ReactFlowProvider } from "@xyflow/react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import nodeTypes from "./NodeTypes";
 import { createLFStore, LFStore, LFStoreConfig, StoreContext } from "./model";
 import useLFStoreState from "./hooks/useLFStoreState";
@@ -8,11 +8,12 @@ import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
 import { ConnectorModel } from "./model/connectorModal";
 import { ShortcutModal } from "./model/shortcutModal";
 import { WflowNode } from "./layoutEngine/utils";
+import { UndoRedoModel } from "./model/UndoRedoModel";
 
 function WorkflowWrapper() {
   const { nodes, edges, layoutEngine } = useLFStoreState();
   const { contextHolder } = ConnectorModel.useModel();
-  const { setSelectedId } = useLFStoreState();
+  const { setSelectedId, flowNodes } = useLFStoreState();
   // const tt = layoutEngine.exportFlowNodes();
 
   // useCopilotReadable({
@@ -79,11 +80,13 @@ export default function Workflow(props: LFStoreConfig) {
   return (
     <ConnectorModel.Provider>
       <StoreContext.Provider value={storeRef.current}>
-        <ShortcutModal.Provider>
-          <ReactFlowProvider>
-            <WorkflowWrapper />
-          </ReactFlowProvider>
-        </ShortcutModal.Provider>
+        <UndoRedoModel.Provider>
+          <ShortcutModal.Provider>
+            <ReactFlowProvider>
+              <WorkflowWrapper />
+            </ReactFlowProvider>
+          </ShortcutModal.Provider>
+        </UndoRedoModel.Provider>
       </StoreContext.Provider>
     </ConnectorModel.Provider>
   );

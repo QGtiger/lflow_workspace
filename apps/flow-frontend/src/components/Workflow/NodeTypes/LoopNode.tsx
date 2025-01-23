@@ -1,6 +1,6 @@
 import { Handle, Position } from "@xyflow/react";
 import { WorkflowNodeProps } from "../layoutEngine/utils";
-import { memo, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import useNodeResize from "../hooks/useNodeResize";
 import { useResizeObserver } from "../layoutEngine/useResizeObserver";
 import ContextMenuDropDown from "./ContextMenuDropDown";
@@ -11,12 +11,22 @@ function LoopNode(props: WorkflowNodeProps) {
   const {
     id,
     data: { vw, vh, label, index, nodeData },
+    width,
+    height,
   } = props;
   const nodeRef = useRef<HTMLDivElement>(null);
   const nodeResize = useNodeResize();
   // 视觉节点
   const visualNodeRef = useRef<HTMLDivElement>(null);
   const { selectedId } = useLFStoreState();
+
+  useEffect(() => {
+    if (!id || !width || !height) return;
+    nodeResize(id, {
+      w: width,
+      h: height,
+    });
+  }, [width, height]);
 
   useResizeObserver(nodeRef, (entry) => {
     if (!id) return;

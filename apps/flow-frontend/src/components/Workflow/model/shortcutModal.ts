@@ -12,21 +12,11 @@ import useFlowEngine from "../hooks/useFlowEngine";
 type MenuItemType = NonNullable<MenuProps["items"]>[number];
 
 export const ShortcutModal = createCustomModel(() => {
-  const {
-    replaceNode,
-    duplicateNode,
-    isLoopNodeById,
-    isPathRuleNodeById,
-    copyNode,
-  } = useFlowNode();
+  const { replaceNode, duplicateNode, isLoopNodeById, copyNode } =
+    useFlowNode();
   const del = useDelNode();
   const { selectedId, rerender } = useLFStoreState();
-  const {
-    getBlockByCheckNodeExist,
-    generateBlock,
-    transferWrokflowNodeToFlowBlock,
-    insetBlockById,
-  } = useFlowEngine();
+  const { transferWrokflowNodeToFlowBlock, insetBlockById } = useFlowEngine();
   const clipboardDataRef = useRef<WorkflowNode[] | undefined>();
 
   useKeyPress(["meta.d", "ctrl.d"], (e) => {

@@ -12,6 +12,7 @@ import {
 } from "../layoutEngine/utils";
 import useDelNode from "./useDelNode";
 import useFlowEngine from "./useFlowEngine";
+import { generatePathRuleNode } from "../layoutEngine/core/PathRuleConnector";
 
 function AddNodeModal({
   onItemClick,
@@ -99,7 +100,8 @@ export default function useFlowNode() {
   const { layoutEngine, rerender } = useLFStoreState();
   const { createModal } = ConnectorModel.useModel();
   const delNode = useDelNode();
-  const { getBlockByCheckNodeExist, generateBlock } = useFlowEngine();
+  const { getBlockByCheckNodeExist, generateBlock, insetBlockById } =
+    useFlowEngine();
 
   const addConnectorNode = (options: {
     parentId?: string;
@@ -194,6 +196,19 @@ export default function useFlowNode() {
     return ins;
   };
 
+  const addPathRule = (parentId: string) => {
+    const b = layoutEngine.getBlockByCheckNodeExist(parentId);
+    if (!isPathsBlock(b)) {
+      throw new Error("only Path block can add PathRule");
+    }
+    insetBlockById({
+      block: generateBlock(generatePathRuleNode()),
+      parentId,
+      inner: true,
+    });
+    rerender();
+  };
+
   const isComplexBlock = (id: string) => {
     const block = layoutEngine.getBlockByCheckNodeExist(id);
     return isPathsBlock(block) || isLoopBlock(block);
@@ -217,5 +232,6 @@ export default function useFlowNode() {
       return isPathRuleBlock(block);
     },
     copyNode,
+    addPathRule,
   };
 }

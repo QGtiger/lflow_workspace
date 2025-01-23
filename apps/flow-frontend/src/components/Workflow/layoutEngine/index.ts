@@ -19,10 +19,15 @@ import { cloneObject } from "../common/utils";
 export class LayoutEngine {
   rootId?: string;
   flowBlockMap: Record<string, FlowBlock> = {};
-  viewWidthMap: Record<string, number> = {};
   initialNodes: WorkflowNode[] = [];
 
   constructor(nodes: WorkflowNode[]) {
+    this.generateFlowBlockTree(nodes);
+  }
+
+  generateFlowBlockTree(nodes: WorkflowNode[]) {
+    this.flowBlockMap = {};
+
     this.rootId = nodes[0].id;
     this.initialNodes = nodes;
     this.transferWrokflowNodeToFlowBlock({ nodes });
@@ -144,8 +149,8 @@ export class LayoutEngine {
   }
 
   deleteFlowBlock(id: string) {
-    this.getBlockByCheckNodeExist(id);
-    delete this.flowBlockMap[id];
+    // this.getBlockByCheckNodeExist(id);
+    // delete this.flowBlockMap[id];
   }
 
   changeFlowBlockData(id: string, data: Omit<WorkflowNode, "id">) {
