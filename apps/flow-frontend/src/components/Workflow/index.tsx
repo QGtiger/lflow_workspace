@@ -1,4 +1,10 @@
-import { Background, ReactFlow, ReactFlowProvider } from "@xyflow/react";
+import {
+  Background,
+  ReactFlow,
+  ReactFlowProvider,
+  MiniMap,
+  Panel,
+} from "@xyflow/react";
 import { useEffect, useRef } from "react";
 import nodeTypes from "./NodeTypes";
 import { createLFStore, LFStore, LFStoreConfig, StoreContext } from "./model";
@@ -9,11 +15,16 @@ import { ConnectorModel } from "./model/connectorModal";
 import { ShortcutModal } from "./model/shortcutModal";
 import { WflowNode } from "./layoutEngine/utils";
 import { UndoRedoModel } from "./model/UndoRedoModel";
+import CustomController from "./components/CustomController";
+
+import "./index.css";
+import { useMount } from "ahooks";
 
 function WorkflowWrapper() {
   const { nodes, edges, layoutEngine } = useLFStoreState();
   const { contextHolder } = ConnectorModel.useModel();
   const { setSelectedId, flowNodes } = useLFStoreState();
+  const { takeSnapshot } = UndoRedoModel.useModel();
   // const tt = layoutEngine.exportFlowNodes();
 
   // useCopilotReadable({
@@ -39,35 +50,44 @@ function WorkflowWrapper() {
   // });
 
   const selectNode = (node: WflowNode) => {
-    if (!node.data.nodeData.connectorCode) return;
+    if (!node.data?.nodeData?.connectorCode) return;
     setSelectedId(node.id);
   };
 
+  useMount(() => {
+    takeSnapshot("初始化 flow");
+  });
+
   return (
-    <ReactFlow
-      fitView
-      nodes={nodes}
-      edges={edges}
-      nodeTypes={nodeTypes}
-      edgeTypes={edgeTypes}
-      minZoom={0.2}
-      // nodesDraggable={false}
-      nodesConnectable={false}
-      zoomOnDoubleClick={false}
-      // we are setting deleteKeyCode to null to prevent the deletion of nodes in order to keep the example simple.
-      // If you want to enable deletion of nodes, you need to make sure that you only have one root node in your graph.
-      deleteKeyCode={null}
-      nodesDraggable={false}
-      onNodeClick={(event, node) => {
-        selectNode(node);
-      }}
-      onNodeContextMenu={(event, node) => {
-        selectNode(node);
-      }}
-    >
-      <Background />
-      {contextHolder}
-    </ReactFlow>
+    <div className="relative w-full h-full bg-[#f2f4f7]">
+      <ReactFlow
+        fitView
+        nodes={nodes}
+        edges={edges}
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        minZoom={0.2}
+        // nodesDraggable={false}
+        nodesConnectable={false}
+        zoomOnDoubleClick={false}
+        // we are setting deleteKeyCode to null to prevent the deletion of nodes in order to keep the example simple.
+        // If you want to enable deletion of nodes, you need to make sure that you only have one root node in your graph.
+        deleteKeyCode={null}
+        nodesDraggable={false}
+        onNodeClick={(event, node) => {
+          selectNode(node);
+        }}
+        onNodeContextMenu={(event, node) => {
+          selectNode(node);
+        }}
+      >
+        <Background />
+        <Panel position="bottom-left">
+          <CustomController />
+        </Panel>
+        {contextHolder}
+      </ReactFlow>
+    </div>
   );
 }
 

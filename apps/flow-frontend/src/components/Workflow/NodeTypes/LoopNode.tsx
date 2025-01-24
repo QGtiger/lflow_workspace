@@ -55,7 +55,7 @@ function LoopNode(props: WorkflowNodeProps) {
               width: `calc(100% + 2px)`,
             }}
           >
-            {index}.{label}
+            {index}.{nodeData.connectorName || "空白节点"}
           </div>
         </div>
         <div

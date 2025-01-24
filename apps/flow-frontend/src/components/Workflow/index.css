@@ -1,0 +1,19 @@
+.react-flow__handle-bottom {
+  bottom: 2px !important;
+}
+
+.react-flow__handle-top {
+  top: 3px !important;
+}
+
+.react-flow__node-workflowNode {
+  z-index: 1002 !important;
+}
+
+.react-flow__edges {
+  z-index: 1001 !important;
+}
+
+.react-flow__edgelabel-renderer {
+  z-index: 1002 !important;
+}

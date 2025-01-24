@@ -13,6 +13,7 @@ import {
 import useDelNode from "./useDelNode";
 import useFlowEngine from "./useFlowEngine";
 import { generatePathRuleNode } from "../layoutEngine/core/PathRuleConnector";
+import { UndoRedoModel } from "../model/UndoRedoModel";
 
 function AddNodeModal({
   onItemClick,
@@ -102,6 +103,7 @@ export default function useFlowNode() {
   const delNode = useDelNode();
   const { getBlockByCheckNodeExist, generateBlock, insetBlockById } =
     useFlowEngine();
+  const { takeSnapshot } = UndoRedoModel.useModel();
 
   const addConnectorNode = (options: {
     parentId?: string;
@@ -119,6 +121,7 @@ export default function useFlowNode() {
       isResetRoot: true,
     });
     rerender();
+    takeSnapshot(`添加 "${options.connector.name}" 节点`);
   };
 
   const replaceNode = (id: string) => {
@@ -132,7 +135,7 @@ export default function useFlowNode() {
             const parentId = block.parent?.id;
             const isInner = isInnerBlock(block);
 
-            delNode(id);
+            delNode(id, false);
 
             addConnectorNode({ parentId, connector: item, inner: isInner });
             ins.destroy();
@@ -150,7 +153,9 @@ export default function useFlowNode() {
     return new Promise((resolve, reject) => {
       const block = layoutEngine.getBlockByCheckNodeExist(id);
       if (isPathRuleBlock(block)) {
-        return reject("路径规则节点不能克隆");
+        const msg = "路径规则节点不能克隆";
+        message.error(msg);
+        return reject(msg);
       }
       layoutEngine.createFlowBlock({
         node: block.flowNodeData,
@@ -159,7 +164,10 @@ export default function useFlowNode() {
         forceWithId: true,
       });
       rerender();
+      takeSnapshot(`克隆 "${block.flowNodeData.connectorName}" 节点`);
+
       resolve(true);
+      message.success("克隆成功");
     });
   };
 
@@ -167,13 +175,16 @@ export default function useFlowNode() {
     return new Promise<WorkflowNode[]>((resolve, reject) => {
       const block = layoutEngine.getBlockByCheckNodeExist(id);
       if (isPathRuleBlock(block)) {
-        return reject("路径规则节点不能复制");
+        const msg = "路径规则节点不能复制";
+        message.error(msg);
+        return reject(msg);
       }
       resolve(
         generateBlock(
           getBlockByCheckNodeExist(id).flowNodeData
         ).exportFlowNodes()
       );
+      message.success("节点复制成功");
     });
   };
 
@@ -207,6 +218,7 @@ export default function useFlowNode() {
       inner: true,
     });
     rerender();
+    takeSnapshot(`添加 "路径规则" 节点`);
   };
 
   const isComplexBlock = (id: string) => {

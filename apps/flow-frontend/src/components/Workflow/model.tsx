@@ -7,10 +7,8 @@ import { WflowEdge, WflowNode } from "./layoutEngine/utils";
 
 interface LFStoreState {
   nodes: WflowNode[];
-  setNodes(nodes: WflowNode[]): void;
   getNodes(): WflowNode[];
   edges: WflowEdge[];
-  setEdges(edges: WflowEdge[]): void;
   getEdges(): WflowEdge[];
 
   deleteNode(id: string): void;
@@ -74,16 +72,10 @@ export function createLFStore(config: LFStoreConfig) {
       macroRender,
       layoutEngine: engineIns,
       nodes: data.nodes,
-      setNodes(nodes) {
-        // set({ nodes });
-      },
       getNodes() {
         return get().nodes;
       },
       edges: data.edges,
-      setEdges(edges) {
-        // set({ edges });
-      },
       getEdges() {
         return get().edges;
       },

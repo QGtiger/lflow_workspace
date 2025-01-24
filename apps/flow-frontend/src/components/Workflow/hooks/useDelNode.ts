@@ -10,8 +10,6 @@ export default function useDelNode() {
   const { takeSnapshot } = UndoRedoModel.useModel();
 
   return (id: string, autoAddEmptyNode?: boolean) => {
-    takeSnapshot("删除节点");
-
     const b = layoutEngine.getBlockByCheckNodeExist(id);
     const { parent } = b;
     if (parent) {
@@ -49,5 +47,8 @@ export default function useDelNode() {
 
     layoutEngine.deleteFlowBlock(id);
     rerender();
+    if (autoAddEmptyNode) {
+      takeSnapshot(`删除 "${b.flowNodeData.connectorName}" 节点`);
+    }
   };
 }

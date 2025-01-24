@@ -1,138 +1,112 @@
 import { createCustomModel } from "@/common/createModel";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
-import { WflowEdge, WflowNode } from "../layoutEngine/utils";
 import useLFStoreState from "../hooks/useLFStoreState";
-
-// type UseUndoRedo = (options?: UseUndoRedoOptions) => {
-//   undo: () => void;
-//   redo: () => void;
-//   takeSnapshot: () => void;
-//   canUndo: boolean;
-//   canRedo: boolean;
-// };
+import { useDebounceFn, useKeyPress, useReactive } from "ahooks";
+import { message } from "antd";
+import { v4 as uuidV4 } from "uuid";
 
 type HistoryItem = {
-  nodes: WflowNode[];
-  edges: WflowEdge[];
   flowNodes: WorkflowNode[];
   title: string;
+  uuid: string;
 };
 
 const maxHistorySize = 100;
 
 export const UndoRedoModel = createCustomModel(() => {
-  // 过去和未来的数组存储了我们可以跳转到的状态
-  const [past, setPast] = useState<HistoryItem[]>([]);
-  const [future, setFuture] = useState<HistoryItem[]>([]);
+  const pastModel = useReactive({
+    historyList: [] as HistoryItem[],
+    currHistoryUuid: "",
+  });
+  const { historyList, currHistoryUuid } = pastModel;
+  const currentIndex = historyList.findIndex(
+    (it) => it.uuid === currHistoryUuid
+  );
 
-  const { getFlowNodes, setFlowNodes, setNodes, setEdges, getNodes, getEdges } =
-    useLFStoreState();
+  const { getFlowNodes, setFlowNodes } = useLFStoreState();
 
-  const takeSnapshot = useCallback(
+  const { run: takeSnapshot } = useDebounceFn(
     (title: string) => {
-      // 将当前图表推送到过去状态
-      setPast((past) => [
-        ...past.slice(past.length - maxHistorySize + 1, past.length),
-        {
-          nodes: getNodes(),
-          edges: getEdges(),
-          flowNodes: getFlowNodes(),
-          title,
-        },
-      ]);
+      const { historyList, currHistoryUuid } = pastModel;
+      const i = historyList.findIndex((it) => it.uuid === currHistoryUuid);
+      if (i > -1) {
+        // 新的快照时，redo 需要清除
+        historyList.splice(i + 1);
+      }
 
-      // 每当我们拍摄新快照时，重做操作需要清除，以避免状态不匹配
-      setFuture([]);
+      historyList.push({
+        flowNodes: getFlowNodes(),
+        title,
+        uuid: uuidV4(),
+      });
+      pastModel.currHistoryUuid = historyList[historyList.length - 1].uuid;
     },
-    [getNodes, getEdges, maxHistorySize, getFlowNodes]
+    {
+      wait: 50,
+    }
   );
 
   const undo = useCallback(() => {
-    // 获取我们想要返回的最后一个状态
-    const pastState = past[past.length - 1];
-
-    if (pastState) {
-      // 首先我们从历史记录中删除状态
-      setPast((past) => past.slice(0, past.length - 1));
-      // 我们存储当前图表以供重做操作
-      setFuture((future) => [
-        ...future,
-        {
-          nodes: getNodes(),
-          edges: getEdges(),
-          flowNodes: getFlowNodes(),
-          title: pastState.title,
-        },
-      ]);
-      // 现在我们可以将图表设置为过去的状态
-      setNodes(pastState.nodes);
-      setEdges(pastState.edges);
-      setFlowNodes(pastState.flowNodes);
-    }
-  }, [
-    setNodes,
-    setEdges,
-    getNodes,
-    getEdges,
-    past,
-    setFlowNodes,
-    getFlowNodes,
-  ]);
+    return new Promise((resolve, reject) => {
+      const { historyList, currHistoryUuid } = pastModel;
+      const i = historyList.findIndex((it) => it.uuid === currHistoryUuid);
+      const pastState = historyList[i - 1];
+      if (pastState) {
+        setFlowNodes(pastState.flowNodes);
+        pastModel.currHistoryUuid = pastState.uuid;
+        resolve(pastState);
+        message.success(`撤销到 "${pastState.title}"`);
+      } else {
+        reject("没有可以撤销的快照");
+      }
+    });
+  }, [pastModel, setFlowNodes]);
 
   const redo = useCallback(() => {
-    const futureState = future[future.length - 1];
-
-    if (futureState) {
-      setFuture((future) => future.slice(0, future.length - 1));
-      setPast((past) => [
-        ...past,
-        {
-          nodes: getNodes(),
-          edges: getEdges(),
-          flowNodes: getFlowNodes(),
-          title: futureState.title,
-        },
-      ]);
-      setNodes(futureState.nodes);
-      setEdges(futureState.edges);
-      setFlowNodes(futureState.flowNodes);
-    }
-  }, [
-    setNodes,
-    setEdges,
-    getNodes,
-    getEdges,
-    future,
-    setFlowNodes,
-    getFlowNodes,
-  ]);
-
-  useEffect(() => {
-    const keyDownHandler = (event: KeyboardEvent) => {
-      if (
-        event.key === "z" &&
-        (event.ctrlKey || event.metaKey) &&
-        event.shiftKey
-      ) {
-        redo();
-      } else if (event.key === "z" && (event.ctrlKey || event.metaKey)) {
-        undo();
+    return new Promise((resolve, reject) => {
+      const { historyList, currHistoryUuid } = pastModel;
+      const i = historyList.findIndex((it) => it.uuid === currHistoryUuid);
+      const pastState = historyList[i + 1];
+      if (pastState) {
+        setFlowNodes(pastState.flowNodes);
+        pastModel.currHistoryUuid = pastState.uuid;
+        resolve(pastState);
+        message.success(`重做到 "${pastState.title}"`);
+      } else {
+        reject("没有可以重做的快照");
       }
-    };
+    });
+  }, [pastModel, setFlowNodes]);
 
-    document.addEventListener("keydown", keyDownHandler);
+  const jumpTo = (uuid: string) => {
+    const { historyList } = pastModel;
+    const pastState = historyList.find((it) => it.uuid === uuid);
+    if (pastState) {
+      setFlowNodes(pastState.flowNodes);
+      pastModel.currHistoryUuid = pastState.uuid;
+      message.success(`跳转至 "${pastState.title}"`);
+    }
+  };
 
-    return () => {
-      document.removeEventListener("keydown", keyDownHandler);
-    };
-  }, [undo, redo]);
+  useKeyPress(["meta.z", "ctrl.z"], (e) => {
+    e.preventDefault();
+    undo();
+  });
+
+  useKeyPress(["meta.y", "ctrl.y"], (e) => {
+    e.preventDefault();
+    redo();
+  });
 
   return {
     undo,
     redo,
     takeSnapshot,
-    canUndo: !past.length,
-    canRedo: !future.length,
+    canUndo: currentIndex > 0,
+    canRedo: currentIndex < historyList.length - 1,
+    ...pastModel,
+    currentIndex,
+    jumpTo,
   };
 });
