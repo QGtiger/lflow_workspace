@@ -1,11 +1,10 @@
 import { Handle, Position } from "@xyflow/react";
 import { WorkflowNodeProps } from "../layoutEngine/utils";
 import { memo, useEffect, useRef } from "react";
-import useNodeResize from "../hooks/useNodeResize";
-import { useResizeObserver } from "../layoutEngine/useResizeObserver";
 import ContextMenuDropDown from "./ContextMenuDropDown";
 import useLFStoreState from "../hooks/useLFStoreState";
 import classNames from "classnames";
+import useFlowNodeResize from "./useFlowNodeResize";
 
 function LoopNode(props: WorkflowNodeProps) {
   const {
@@ -15,32 +14,21 @@ function LoopNode(props: WorkflowNodeProps) {
     height,
   } = props;
   const nodeRef = useRef<HTMLDivElement>(null);
-  const nodeResize = useNodeResize();
   // 视觉节点
   const visualNodeRef = useRef<HTMLDivElement>(null);
   const { selectedId } = useLFStoreState();
 
-  useEffect(() => {
-    if (!id || !width || !height) return;
-    nodeResize(id, {
-      w: width,
-      h: height,
-    });
-  }, [width, height]);
-
-  useResizeObserver(nodeRef, (entry) => {
-    if (!id) return;
-    const { offsetWidth, offsetHeight } = entry.target as HTMLDivElement;
-    if (!offsetWidth || !offsetHeight) return;
-    if (visualNodeRef.current) {
-      visualNodeRef.current.style.height = `${offsetHeight}px`;
-    }
-    nodeResize(id, {
-      w: offsetWidth,
-      h: offsetHeight,
-    });
+  useFlowNodeResize({
+    id,
+    width,
+    height,
+    nodeRef,
+    onResize: (width, height) => {
+      if (visualNodeRef.current) {
+        visualNodeRef.current.style.height = `${height}px`;
+      }
+    },
   });
-
   const isSelected = selectedId === id;
 
   return (

@@ -16,6 +16,7 @@ export default function useNodeResize() {
     if (!size.w || !size.h) return;
     b.setRect(size);
     rerender();
+    // macroRender();
   }, []);
 
   return nodeResize;

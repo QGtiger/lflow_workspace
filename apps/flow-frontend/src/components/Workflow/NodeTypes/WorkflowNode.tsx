@@ -1,12 +1,10 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useRef } from "react";
 import { Handle, Position } from "@xyflow/react";
 import cx from "classnames";
-
-import { useResizeObserver } from "../layoutEngine/useResizeObserver";
-import useNodeResize from "../hooks/useNodeResize";
 import { WorkflowNodeProps } from "../layoutEngine/utils";
 import ContextMenuDropDown from "./ContextMenuDropDown";
 import useLFStoreState from "../hooks/useLFStoreState";
+import useFlowNodeResize from "./useFlowNodeResize";
 
 const WorkflowNode = (props: WorkflowNodeProps) => {
   // see the hook implementation for details of the click handler
@@ -15,24 +13,12 @@ const WorkflowNode = (props: WorkflowNodeProps) => {
   const { id, data, width, height } = props;
   const { selectedId } = useLFStoreState();
   const nodeRef = useRef<HTMLDivElement>(null);
-  const nodeResize = useNodeResize();
 
-  useEffect(() => {
-    if (!id || !width || !height) return;
-    nodeResize(id, {
-      w: width,
-      h: height,
-    });
-  }, [width, height]);
-
-  useResizeObserver(nodeRef, (entry) => {
-    if (!id) return;
-    const { offsetWidth, offsetHeight } = entry.target as HTMLDivElement;
-    if (!offsetWidth || !offsetHeight) return;
-    nodeResize(id, {
-      w: offsetWidth,
-      h: offsetHeight,
-    });
+  useFlowNodeResize({
+    id,
+    width,
+    height,
+    nodeRef,
   });
 
   return (

@@ -20,4 +20,11 @@ export class DisplayObject {
     this.w = rect.w;
     this.h = rect.h;
   }
+
+  getRect() {
+    return {
+      w: this.w,
+      h: this.h,
+    };
+  }
 }
