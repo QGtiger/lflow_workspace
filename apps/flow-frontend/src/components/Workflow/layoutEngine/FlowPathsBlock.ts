@@ -82,6 +82,7 @@ export class FlowPathsBlock extends FlowBlock {
       ...this.nodeData,
       next: this.next?.id,
       children: this.children.map((t) => t.id),
+      sequence: this.index,
     };
   }
 

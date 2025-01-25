@@ -88,6 +88,7 @@ export class FlowLoopBlock extends FlowBlock {
       ...this.nodeData,
       next: this.next?.id,
       children: this.innerBlock ? [this.innerBlock.id] : [],
+      sequence: this.index,
     };
   }
 

@@ -35,20 +35,17 @@ export interface LFStoreConfig {
 export function createLFStore(config: LFStoreConfig) {
   const engineIns = new LayoutEngine(config.flowNodes);
   const data = engineIns.exportReactFlowData();
-  console.log(data, engineIns.flowBlockMap[engineIns.rootId!]);
   const store = createStore<LFStoreState>((set, get) => {
     function setNodesEdges() {
-      console.log("generate");
       const newData = engineIns.exportReactFlowData();
       const flowNodes = engineIns.exportFlowNodes();
       const nodesWithTransition = newData.nodes.map((node) => ({
         ...node,
         style: {
           ...node.style,
-          // transition: "all 200ms ease-in-out",
+          transition: "all 200ms ease-in-out",
         },
       }));
-      console.log(flowNodes);
       set({ nodes: nodesWithTransition, edges: newData.edges, flowNodes });
     }
 

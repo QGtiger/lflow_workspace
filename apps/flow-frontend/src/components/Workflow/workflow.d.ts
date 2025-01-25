@@ -9,6 +9,8 @@ interface WorkflowNode {
   version?: string;
   description?: string;
 
+  sequence?: number;
+
   children?: WorkflowNode["id"][];
   next?: WorkflowNode["id"];
 
@@ -19,3 +21,13 @@ interface WorkflowNode {
 }
 
 type WorkflowNodeData = Omit<WorkflowNode, "id" | "next" | "children">;
+
+interface WorkflowNodeV2 {
+  connectorCode: string;
+  connectorName: string;
+  actionCode: string;
+  actionName: string;
+  logo: string;
+  version: string;
+  description: string;
+}

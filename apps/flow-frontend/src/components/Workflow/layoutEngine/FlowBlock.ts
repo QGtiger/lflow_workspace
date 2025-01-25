@@ -25,6 +25,7 @@ export class FlowBlock extends DisplayObject {
     return {
       ...this.nodeData,
       next: this.next?.id,
+      sequence: this.index,
     };
   }
 

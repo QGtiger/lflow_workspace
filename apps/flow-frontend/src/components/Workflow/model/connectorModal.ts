@@ -18,6 +18,31 @@ export const ConnectorModel = createCustomModel(() => {
     modalInsListRef.current = [];
   }, [location]);
 
+  const generateNodeDataByConnector = (opts: {
+    connectorCode: string;
+    actionCode: string;
+  }): WorkflowNodeV2 => {
+    const connector = list.find((item) => item.code === opts.connectorCode);
+    if (!connector) {
+      throw new Error("Connector not found");
+    }
+    const action = connector.actions.find(
+      (item) => item.code === opts.actionCode
+    );
+    if (!action) {
+      throw new Error("Action not found");
+    }
+    return {
+      connectorCode: connector.code,
+      version: connector.version,
+      connectorName: connector.name,
+      logo: connector.logo,
+      actionCode: action.code,
+      actionName: action.name,
+      description: action.description,
+    };
+  };
+
   return {
     connectorList: list,
     createModal(config: ModalFuncProps) {
@@ -26,5 +51,8 @@ export const ConnectorModel = createCustomModel(() => {
       return modalIns;
     },
     contextHolder,
+    connectorListWithBuildIn: buildInConncetor,
+
+    generateNodeDataByConnector,
   };
 });

@@ -10,10 +10,12 @@ import {
   isPathsBlock,
   uuid,
 } from "../layoutEngine/utils";
-import useDelNode from "./useDelNode";
 import useFlowEngine from "./useFlowEngine";
 import { generatePathRuleNode } from "../layoutEngine/core/PathRuleConnector";
 import { UndoRedoModel } from "../model/UndoRedoModel";
+import { FlowLoopBlock } from "../layoutEngine/FlowLoopBlock";
+import { generateEmptyNode } from "../layoutEngine/core";
+import { FlowPathsBlock } from "../layoutEngine/FlowPathsBlock";
 
 function AddNodeModal({
   onItemClick,
@@ -100,7 +102,6 @@ const generateNodeDataByConnector = (connector: Connector) => {
 export default function useFlowNode() {
   const { layoutEngine, rerender } = useLFStoreState();
   const { createModal } = ConnectorModel.useModel();
-  const delNode = useDelNode();
   const { getBlockByCheckNodeExist, generateBlock, insetBlockById } =
     useFlowEngine();
   const { takeSnapshot } = UndoRedoModel.useModel();
@@ -122,6 +123,53 @@ export default function useFlowNode() {
     });
     rerender();
     takeSnapshot(`添加 "${options.connector.name}" 节点`);
+  };
+
+  const delNode = (
+    id: string,
+    autoAddEmptyNode?: boolean,
+    isTaskSnapshot?: boolean
+  ) => {
+    const b = layoutEngine.getBlockByCheckNodeExist(id);
+    const { parent } = b;
+    if (parent) {
+      if (parent instanceof FlowLoopBlock && parent.innerBlock === b) {
+        const hasNext = !!b.next;
+        parent.setInnerBlock(b.next, true);
+        // 只有一个节点，则添加一个空节点
+        if (!hasNext && autoAddEmptyNode) {
+          layoutEngine.createFlowBlock({
+            node: generateEmptyNode(),
+            parentId: parent.id,
+            inner: true,
+          });
+        }
+      } else if (parent instanceof FlowPathsBlock && parent.hasChild(id)) {
+        parent.removeChild(b);
+        // 分支最少两个
+        if (parent.children.length < 2) {
+          parent.addChild(layoutEngine.generateBlock(generatePathRuleNode()));
+        }
+      } else {
+        parent.next = b.next;
+        if (b.next) {
+          b.next.parent = parent;
+        }
+      }
+    } else {
+      // 删除根节点
+      layoutEngine.rootId = b.next?.id;
+      if (b.next) {
+        b.next.parent = undefined;
+      }
+    }
+    b.removeLink();
+
+    layoutEngine.deleteFlowBlock(id);
+    rerender();
+    if (isTaskSnapshot) {
+      takeSnapshot(`删除 "${b.flowNodeData.connectorName}" 节点`);
+    }
   };
 
   const replaceNode = (id: string) => {
@@ -227,6 +275,7 @@ export default function useFlowNode() {
   };
 
   return {
+    delNode,
     replaceNode,
     addNodeByEdge,
     duplicateNode,

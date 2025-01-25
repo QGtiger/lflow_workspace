@@ -72,8 +72,8 @@ export default function ConsoleLayout() {
           "您正在尽最大努力协助用户。根据您拥有的数据，以最佳方式回答。"
         }
         labels={{
-          title: "智能助手",
-          initial: "需要我帮助吗?",
+          title: "Flow Copilot",
+          initial: "你好，我是你的Flow Copilot，有什么可以帮助你的吗？",
         }}
       >
         <ProLayout

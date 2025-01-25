@@ -10,12 +10,12 @@ export class AppService {
   constructor(private readonly configService: ConfigService) {
     console.log(this.configService.get('OPENAI_API_KEY'));
     const openai = new OpenAI({
-      apiKey: this.configService.get('OPENAI_API_KEY'),
-      baseURL: 'https://api.302.ai/v1/chat/completions',
+      apiKey: 'sk-1d1e92ee5d28471c8950843c0cd737f2', // this.configService.get('OPENAI_API_KEY'),
+      baseURL: 'https://api.deepseek.com', // 'https://api.302.ai/v1/chat/completions',
     });
     this.serviceAdapter = new OpenAIAdapter({
       openai,
-      model: 'gpt-4-turbo', // 'gpt-4o-plus',
+      model: 'deepseek-chat', //'gpt-4-turbo', // 'gpt-4o-plus',
     });
   }
 

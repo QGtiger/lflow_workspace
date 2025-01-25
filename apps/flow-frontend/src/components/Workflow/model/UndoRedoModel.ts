@@ -5,6 +5,7 @@ import useLFStoreState from "../hooks/useLFStoreState";
 import { useDebounceFn, useKeyPress, useReactive } from "ahooks";
 import { message } from "antd";
 import { v4 as uuidV4 } from "uuid";
+import { keyPressConfig } from "../utils";
 
 type HistoryItem = {
   flowNodes: WorkflowNode[];
@@ -89,15 +90,23 @@ export const UndoRedoModel = createCustomModel(() => {
     }
   };
 
-  useKeyPress(["meta.z", "ctrl.z"], (e) => {
-    e.preventDefault();
-    undo();
-  });
+  useKeyPress(
+    ["meta.z", "ctrl.z"],
+    (e) => {
+      e.preventDefault();
+      undo();
+    },
+    keyPressConfig
+  );
 
-  useKeyPress(["meta.y", "ctrl.y"], (e) => {
-    e.preventDefault();
-    redo();
-  });
+  useKeyPress(
+    ["meta.y", "ctrl.y"],
+    (e) => {
+      e.preventDefault();
+      redo();
+    },
+    keyPressConfig
+  );
 
   return {
     undo,

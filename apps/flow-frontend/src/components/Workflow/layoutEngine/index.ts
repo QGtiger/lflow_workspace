@@ -132,21 +132,28 @@ export class LayoutEngine {
     }
   };
 
-  createFlowBlock(opts: {
-    node: WorkflowNode;
+  createFlowBlock = (opts: {
+    node: Partial<WorkflowNode>;
     parentId?: string;
     inner?: boolean;
     forceWithId?: boolean;
     isResetRoot?: boolean;
     renderingNodes?: WorkflowNode[];
-  }): FlowBlock {
+  }): FlowBlock => {
     const { node, parentId, inner, forceWithId, isResetRoot, renderingNodes } =
       opts;
-    const item = this.generateBlock(node, forceWithId, renderingNodes);
+    if (!node.id) {
+      node.id = uuid();
+    }
+    const item = this.generateBlock(
+      node as WorkflowNode,
+      forceWithId,
+      renderingNodes
+    );
 
     this.insetBlockById({ block: item, parentId, inner, isResetRoot });
     return item;
-  }
+  };
 
   deleteFlowBlock(id: string) {
     // this.getBlockByCheckNodeExist(id);
