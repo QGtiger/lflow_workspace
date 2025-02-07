@@ -5,11 +5,9 @@ import { WorkflowNodeProps } from "../layoutEngine/utils";
 import ContextMenuDropDown from "./ContextMenuDropDown";
 import useLFStoreState from "../hooks/useLFStoreState";
 import useFlowNodeResize from "./useFlowNodeResize";
+import FlowNode from "./components/FlowNode";
 
 const WorkflowNode = (props: WorkflowNodeProps) => {
-  // see the hook implementation for details of the click handler
-  // calling onClick adds a child node to this node
-  // const onClick = useNodeClickHandler(id);
   const { id, data, width, height } = props;
   const { selectedId } = useLFStoreState();
   const nodeRef = useRef<HTMLDivElement>(null);
@@ -30,7 +28,7 @@ const WorkflowNode = (props: WorkflowNodeProps) => {
         })}
         title="click to add a child node"
       >
-        {data.index}.{data.nodeData.connectorName || "空白节点"}
+        <FlowNode nodeData={data.nodeData} index={data.index} />
         <Handle type="target" position={Position.Top} isConnectable={false} />
         <Handle
           type="source"

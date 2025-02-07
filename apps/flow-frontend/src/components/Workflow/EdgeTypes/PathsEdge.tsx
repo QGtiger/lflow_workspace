@@ -69,6 +69,7 @@ export function PathsEdge(props: EdgeProps) {
             onClick={() => {
               addPathRule(source);
             }}
+            label="添加分支"
           />
         </div>
       </EdgeLabelRenderer>

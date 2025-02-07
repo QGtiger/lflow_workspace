@@ -37,6 +37,7 @@ export class FlowPathsBlock extends FlowBlock {
   }
 
   queryViewHeight() {
+    if (!this.open) return this.h;
     if (this.viewHeight) return this.viewHeight;
     const vh = Math.max(
       ...this.children.map((child) => child.queryViewHeight())
@@ -46,6 +47,7 @@ export class FlowPathsBlock extends FlowBlock {
   }
 
   queryViewWidth(): number {
+    if (!this.open) return this.w;
     if (this.viewWidth) return this.viewWidth;
     const vw = this.children.reduce((acc, child, index) => {
       return acc + child.queryViewWidth() + (index > 0 ? this.oy : 0);
@@ -101,8 +103,38 @@ export class FlowPathsBlock extends FlowBlock {
     );
   }
 
-  exportReactFlowDataByFlowBlock(index: number = 1): ReactFlowData {
+  private open: boolean = true;
+
+  fold() {
+    this.open = false;
+  }
+
+  unfold() {
+    this.open = true;
+  }
+
+  /**
+   * 查询节点数量
+   */
+  queryNodeCount(): number {
+    return (
+      this.children.reduce((res, cur) => {
+        res += cur.queryNodeCount();
+        return res;
+      }, 0) + 1
+    );
+  }
+
+  exportReactFlowDataByFlowBlock(
+    index: number = 1,
+    offsetNext: number = 1
+  ): ReactFlowData {
     this.index = index;
+
+    if (!this.open) {
+      return super.exportReactFlowDataByFlowBlock(index, this.queryNodeCount());
+    }
+
     const currNode = generateNode({
       block: this,
     });
@@ -121,7 +153,7 @@ export class FlowPathsBlock extends FlowBlock {
         edges: [],
         startNodes: [],
         endNodes: [],
-        preIndex: index + 1,
+        preIndex: index + offsetNext,
       } as {
         nodes: ReactFlowData["nodes"];
         edges: ReactFlowData["edges"];

@@ -1,9 +1,8 @@
 .node-style {
   border: 1px solid #98a2b3;
   border-radius: 4px;
-  background-color: #fff;
+  background-color: #ebebeb73;
   box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
-  color: #0984e3;
 }
 
 .react-flow__handle {
@@ -15,10 +14,6 @@
   border-radius: 4px;
   background-color: #fff;
   box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
-  padding: 12px;
-  text-align: center;
-  font-weight: bold;
-  color: #0984e3;
   cursor: pointer;
   line-height: 1.2;
   position: relative;

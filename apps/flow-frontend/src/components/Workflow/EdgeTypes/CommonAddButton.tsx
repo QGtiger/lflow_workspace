@@ -1,4 +1,10 @@
-export default function CommonAddButton({ onClick }: { onClick(): void }) {
+export default function CommonAddButton({
+  onClick,
+  label,
+}: {
+  onClick(): void;
+  label?: string;
+}) {
   return (
     <div
       className="cursor-pointer text-xs bg-white border border-solid border-gray-300

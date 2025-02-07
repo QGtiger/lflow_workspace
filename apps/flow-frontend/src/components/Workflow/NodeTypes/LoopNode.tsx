@@ -5,6 +5,7 @@ import ContextMenuDropDown from "./ContextMenuDropDown";
 import useLFStoreState from "../hooks/useLFStoreState";
 import classNames from "classnames";
 import useFlowNodeResize from "./useFlowNodeResize";
+import FlowNode from "./components/FlowNode";
 
 function LoopNode(props: WorkflowNodeProps) {
   const {
@@ -55,7 +56,7 @@ function LoopNode(props: WorkflowNodeProps) {
               width: `calc(100% + 2px)`,
             }}
           >
-            {index}.{nodeData.connectorName || "空白节点"}
+            <FlowNode nodeData={nodeData} index={index} />
           </div>
         </div>
         <div
@@ -66,7 +67,7 @@ function LoopNode(props: WorkflowNodeProps) {
           ref={nodeRef}
           onClick={() => {}}
         >
-          {label}
+          <FlowNode nodeData={nodeData} index={index} />
           <Handle type="target" position={Position.Top} isConnectable={false} />
           <Handle
             type="source"

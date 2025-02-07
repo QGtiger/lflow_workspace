@@ -20,7 +20,7 @@ const PlaceholderNode = (props: WorkflowNodeProps) => {
   return (
     <div
       ref={nodeRef}
-      className="work-flow-node placeholder-node"
+      className="work-flow-node placeholder-node p-4"
       title="click to add a node"
       onClick={() => {
         replaceNode(props.id);

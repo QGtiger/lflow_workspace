@@ -13,8 +13,16 @@ import { keyPressConfig } from "../utils";
 type MenuItemType = NonNullable<MenuProps["items"]>[number];
 
 export const ShortcutModal = createCustomModel(() => {
-  const { replaceNode, duplicateNode, isLoopNodeById, copyNode, delNode } =
-    useFlowNode();
+  const {
+    replaceNode,
+    duplicateNode,
+    isLoopNodeById,
+    copyNode,
+    delNode,
+    isComplexNodeById,
+    foldNodeById,
+    unfoldNodeById,
+  } = useFlowNode();
   const { selectedId, rerender } = useLFStoreState();
   const { transferWrokflowNodeToFlowBlock, insetBlockById } = useFlowEngine();
   const clipboardDataRef = useRef<WorkflowNode[] | undefined>();
@@ -202,6 +210,22 @@ export const ShortcutModal = createCustomModel(() => {
         onClick: () => {
           delNode(flowNode.id, true, true);
         },
+      },
+      {
+        label: "收起",
+        key: "fold",
+        onClick: () => {
+          foldNodeById(flowNode.id);
+        },
+        hidden: !isComplexNodeById(flowNode.id),
+      },
+      {
+        label: "展开",
+        key: "unfold",
+        onClick: () => {
+          unfoldNodeById(flowNode.id);
+        },
+        hidden: !isComplexNodeById(flowNode.id),
       },
     ];
 

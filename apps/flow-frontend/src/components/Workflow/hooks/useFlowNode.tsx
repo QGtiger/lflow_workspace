@@ -269,9 +269,31 @@ export default function useFlowNode() {
     takeSnapshot(`添加 "路径规则" 节点`);
   };
 
-  const isComplexBlock = (id: string) => {
+  const isComplexNodeById = (id: string) => {
     const block = layoutEngine.getBlockByCheckNodeExist(id);
     return isPathsBlock(block) || isLoopBlock(block);
+  };
+
+  const isLoopNodeById = (id: string) => {
+    const block = layoutEngine.getBlockByCheckNodeExist(id);
+    return isLoopBlock(block);
+  };
+
+  const isPathNodeById = (id: string) => {
+    const block = layoutEngine.getBlockByCheckNodeExist(id);
+    return isPathsBlock(block);
+  };
+
+  const foldNodeById = (id: string) => {
+    const block = layoutEngine.getBlockByCheckNodeExist(id);
+    (block as any).fold?.();
+    rerender();
+  };
+
+  const unfoldNodeById = (id: string) => {
+    const block = layoutEngine.getBlockByCheckNodeExist(id);
+    (block as any).unfold?.();
+    rerender();
   };
 
   return {
@@ -279,20 +301,16 @@ export default function useFlowNode() {
     replaceNode,
     addNodeByEdge,
     duplicateNode,
-    isComplexBlock,
-    isLoopNodeById(id: string) {
-      const block = layoutEngine.getBlockByCheckNodeExist(id);
-      return isLoopBlock(block);
-    },
-    isPathNodeById(id: string) {
-      const block = layoutEngine.getBlockByCheckNodeExist(id);
-      return isPathsBlock(block);
-    },
+    isLoopNodeById,
+    isPathNodeById,
     isPathRuleNodeById(id: string) {
       const block = layoutEngine.getBlockByCheckNodeExist(id);
       return isPathRuleBlock(block);
     },
     copyNode,
     addPathRule,
+    isComplexNodeById,
+    foldNodeById,
+    unfoldNodeById,
   };
 }

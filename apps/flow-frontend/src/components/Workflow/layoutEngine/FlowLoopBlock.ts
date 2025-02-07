@@ -37,6 +37,7 @@ export class FlowLoopBlock extends FlowBlock {
   }
 
   queryViewHeight(): number {
+    if (!this.open) return this.h;
     if (this.viewHeight) return this.viewHeight;
     let vh = this.h + this.innerMb;
     if (this.innerBlock) {
@@ -50,6 +51,7 @@ export class FlowLoopBlock extends FlowBlock {
   }
 
   queryViewWidth(): number {
+    if (!this.open) return this.w;
     if (this.viewWidth) return this.viewWidth;
 
     let vw = this.w;
@@ -104,16 +106,41 @@ export class FlowLoopBlock extends FlowBlock {
     );
   }
 
-  exportReactFlowDataByFlowBlock(index: number = 1): ReactFlowData {
+  private open: boolean = true;
+
+  fold() {
+    this.open = false;
+  }
+
+  unfold() {
+    this.open = true;
+  }
+
+  /**
+   * 查询节点数量
+   */
+  queryNodeCount(): number {
+    return 1 + (this.innerBlock?.queryNodeCount() || 0);
+  }
+
+  exportReactFlowDataByFlowBlock(
+    index: number = 1,
+    offsetNext: number = 1
+  ): ReactFlowData {
     if (!this.innerBlock) {
       throw new Error("innerBlock is required");
     }
     this.index = index;
 
+    if (!this.open) {
+      // 未展开
+      return super.exportReactFlowDataByFlowBlock(index, this.queryNodeCount());
+    }
+
     const endNode = this.generateEndNode();
 
     const innerChildNodes = this.innerBlock.exportReactFlowDataByFlowBlock(
-      index + 1
+      index + offsetNext
     );
 
     const currNode = generateNode({

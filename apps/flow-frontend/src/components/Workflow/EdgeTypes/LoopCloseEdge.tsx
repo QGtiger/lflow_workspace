@@ -48,7 +48,6 @@ export default function LoopCloseEdge(props: WflowEdgeProps) {
   const strokeColor = useStrokeColor();
   const { addNodeByEdge } = useFlowNode();
   const { vw: targetVw, h: targetH } = useFlowNodeViewRect(target);
-  console.log(source);
 
   if (targetVw === 0) return null;
 

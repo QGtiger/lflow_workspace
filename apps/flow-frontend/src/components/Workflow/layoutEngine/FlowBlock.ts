@@ -99,18 +99,28 @@ export class FlowBlock extends DisplayObject {
     );
   }
 
-  exportReactFlowDataByFlowBlock(index: number = 1): ReactFlowData {
+  /**
+   * 查询节点数量
+   */
+  queryNodeCount(): number {
+    return 1 + (this.next?.queryNodeCount() || 0);
+  }
+
+  exportReactFlowDataByFlowBlock(
+    index: number = 1,
+    offsetNext: number = 1
+  ): ReactFlowData {
     this.index = index;
     const currNode = generateNode({
       block: this,
     });
     const nextBlockData = this.next?.exportReactFlowDataByFlowBlock(
-      index + 1
+      index + offsetNext
     ) || {
       nodes: [],
       edges: [],
       endNode: currNode,
-      index: this.index + 1,
+      index: this.index + offsetNext,
     };
 
     const nodes = Array.prototype.concat.call(
