@@ -135,6 +135,7 @@ export class FlowLoopBlock extends FlowBlock {
       endNode,
       ...nextBlockData.nodes,
     ];
+
     const edges = [
       generateEdge({
         sourceNode: currNode,
@@ -142,10 +143,16 @@ export class FlowLoopBlock extends FlowBlock {
         type: "loopInnerEdge",
       }),
       ...innerChildNodes.edges,
-      // generateEdge({
-      //   sourceNode: innerChildNodes.endNode,
-      //   targetNode: endNode,
-      // }),
+
+      ...(isEmptyNode(innerChildNodes.nodes[0].data.nodeData)
+        ? []
+        : [
+            generateEdge({
+              sourceNode: innerChildNodes.endNode,
+              targetNode: currNode,
+              type: "loopCloseEdge",
+            }),
+          ]),
       ...(() => {
         const nextNode = nextBlockData.nodes.at(0);
         if (!nextNode) return [];

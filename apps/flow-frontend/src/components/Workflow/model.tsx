@@ -43,7 +43,7 @@ export function createLFStore(config: LFStoreConfig) {
         ...node,
         style: {
           ...node.style,
-          transition: "all 200ms ease-in-out",
+          // transition: "all 200ms ease-in-out",
         },
       }));
       set({ nodes: nodesWithTransition, edges: newData.edges, flowNodes });

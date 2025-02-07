@@ -179,6 +179,7 @@ function WorkflowWrapper() {
         }}
       >
         <Background />
+        <MiniMap />
         <Panel position="bottom-left">
           <CustomController />
         </Panel>

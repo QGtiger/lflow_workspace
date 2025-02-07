@@ -16,7 +16,7 @@ function getCustomSmoothStepPath(config: {
   const sweepFlag = sourceX > targetX ? 1 : 0;
 
   const labelX = sourceX;
-  const labelY = sourceY + 13; //;
+  const labelY = sourceY + 13;
 
   if (Math.abs(sourceX - targetX) < 2 * radius) {
     return [`M ${sourceX} ${sourceY} L ${targetX} ${targetY}`, labelX, labelY];

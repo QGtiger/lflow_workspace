@@ -1,4 +1,5 @@
 import { EndflowEdge } from "./EndflowEdge";
+import LoopCloseEdge from "./LoopCloseEdge";
 import LoopInnerEdge from "./LoopInnerEdge";
 import { PathsEdge } from "./PathsEdge";
 import PlaceholderEdge from "./PlaceholderEdge";
@@ -10,6 +11,7 @@ export const edgeTypes = {
   stepflowEdge: StepflowEdge,
   loopInnerEdge: LoopInnerEdge,
   placeholderEdge: PlaceholderEdge,
+  loopCloseEdge: LoopCloseEdge,
 };
 
 export default edgeTypes;
