@@ -50,6 +50,8 @@ export default function LoopCloseEdge(props: WflowEdgeProps) {
   const { vw: targetVw, h: targetH } = useFlowNodeViewRect(target);
   console.log(source);
 
+  if (targetVw === 0) return null;
+
   const edgePath = MakeLine({
     points: [
       {
