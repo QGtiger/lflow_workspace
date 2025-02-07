@@ -19,7 +19,7 @@ export const ShortcutModal = createCustomModel(() => {
     isLoopNodeById,
     copyNode,
     delNode,
-    isComplexNodeById,
+    isComplexNode,
     foldNodeById,
     unfoldNodeById,
   } = useFlowNode();
@@ -144,6 +144,7 @@ export const ShortcutModal = createCustomModel(() => {
   const queryMenu = (flowNode: WorkflowNode) => {
     const couldChangeNode = !isPathRuleNode(flowNode);
     const couldDuplicateNode = !isPathRuleNode(flowNode);
+    const complexNode = isComplexNode(flowNode);
 
     const items: Array<
       MenuItemType & {
@@ -217,7 +218,7 @@ export const ShortcutModal = createCustomModel(() => {
         onClick: () => {
           foldNodeById(flowNode.id);
         },
-        hidden: !isComplexNodeById(flowNode.id),
+        hidden: !complexNode,
       },
       {
         label: "展开",
@@ -225,7 +226,7 @@ export const ShortcutModal = createCustomModel(() => {
         onClick: () => {
           unfoldNodeById(flowNode.id);
         },
-        hidden: !isComplexNodeById(flowNode.id),
+        hidden: !complexNode,
       },
     ];
 

@@ -6,8 +6,10 @@ import { useState, useRef } from "react";
 import {
   isInnerBlock,
   isLoopBlock,
+  isLoopNode,
   isPathRuleBlock,
   isPathsBlock,
+  isPathsNode,
   uuid,
 } from "../layoutEngine/utils";
 import useFlowEngine from "./useFlowEngine";
@@ -274,6 +276,10 @@ export default function useFlowNode() {
     return isPathsBlock(block) || isLoopBlock(block);
   };
 
+  const isComplexNode = (node: WorkflowNode) => {
+    return isPathsNode(node) || isLoopNode(node);
+  };
+
   const isLoopNodeById = (id: string) => {
     const block = layoutEngine.getBlockByCheckNodeExist(id);
     return isLoopBlock(block);
@@ -312,5 +318,6 @@ export default function useFlowNode() {
     isComplexNodeById,
     foldNodeById,
     unfoldNodeById,
+    isComplexNode,
   };
 }
