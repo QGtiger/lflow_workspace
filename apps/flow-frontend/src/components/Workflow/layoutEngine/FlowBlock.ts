@@ -103,7 +103,7 @@ export class FlowBlock extends DisplayObject {
    * 查询节点数量
    */
   queryNodeCount(): number {
-    return 1 + (this.next?.queryNodeCount() || 0);
+    return 1;
   }
 
   exportReactFlowDataByFlowBlock(

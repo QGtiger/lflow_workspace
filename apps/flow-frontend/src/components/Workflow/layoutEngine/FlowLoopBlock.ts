@@ -120,7 +120,13 @@ export class FlowLoopBlock extends FlowBlock {
    * 查询节点数量
    */
   queryNodeCount(): number {
-    return 1 + (this.innerBlock?.queryNodeCount() || 0);
+    let count = 1;
+    let b = this.innerBlock;
+    while (b) {
+      count += b.queryNodeCount();
+      b = b.next;
+    }
+    return count;
   }
 
   exportReactFlowDataByFlowBlock(

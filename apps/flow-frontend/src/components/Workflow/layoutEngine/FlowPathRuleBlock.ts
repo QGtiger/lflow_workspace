@@ -27,4 +27,17 @@ export class FlowPathRuleBlock extends FlowBlock {
     this.viewWidth = vw;
     return vw;
   }
+
+  /**
+   * 查询节点数量
+   */
+  queryNodeCount(): number {
+    let count = 1;
+    let b = this.next;
+    while (b) {
+      count += b.queryNodeCount();
+      b = b.next;
+    }
+    return count;
+  }
 }
