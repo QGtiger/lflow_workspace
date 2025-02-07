@@ -12,7 +12,7 @@ export default function FlowNode(props: {
           className="w-4 h-4 overflow-hidden rounded-full"
         />
         <div className="text-xs font-medium text-gray-500">
-          {index}.{nodeData.connectorName}
+          {index}. {nodeData.connectorName}
         </div>
       </div>
       <div className="content mt-2">

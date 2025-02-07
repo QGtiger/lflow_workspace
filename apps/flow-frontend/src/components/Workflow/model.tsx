@@ -46,7 +46,14 @@ export function createLFStore(config: LFStoreConfig) {
           // transition: "all 200ms ease-in-out",
         },
       }));
-      set({ nodes: nodesWithTransition, edges: newData.edges, flowNodes });
+      const sid =
+        flowNodes.find((node) => node.id === get().selectedId)?.id || "";
+      set({
+        nodes: nodesWithTransition,
+        edges: newData.edges,
+        flowNodes,
+        selectedId: sid,
+      });
     }
 
     function setFlowNodes(fnodes: WorkflowNode[]) {

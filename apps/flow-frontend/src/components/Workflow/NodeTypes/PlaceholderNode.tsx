@@ -26,7 +26,7 @@ const PlaceholderNode = (props: WorkflowNodeProps) => {
         replaceNode(props.id);
       }}
     >
-      空白节点
+      {props.data.index}. 空白节点
       <Handle type="target" position={Position.Top} isConnectable={false} />
       <Handle type="source" position={Position.Bottom} isConnectable={false} />
     </div>
