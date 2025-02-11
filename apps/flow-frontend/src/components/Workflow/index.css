@@ -1,9 +1,9 @@
 .react-flow__handle-bottom {
-  bottom: 2px !important;
+  /* bottom: 2px !important; */
 }
 
 .react-flow__handle-top {
-  top: 3px !important;
+  /* top: 3px !important; */
 }
 
 .react-flow__node-workflowNode {

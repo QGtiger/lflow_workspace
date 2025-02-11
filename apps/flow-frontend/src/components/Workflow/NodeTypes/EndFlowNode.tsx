@@ -5,7 +5,7 @@ export function EndFlowNode(props: any) {
     <div>
       <Handle type="target" position={Position.Top} className=" invisible" />
       {props.data.label}
-      <Handle type="source" position={Position.Bottom} className="invisible" />
+      <Handle type="source" position={Position.Top} className="invisible" />
     </div>
   );
 }

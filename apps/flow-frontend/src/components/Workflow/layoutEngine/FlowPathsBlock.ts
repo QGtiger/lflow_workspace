@@ -1,3 +1,4 @@
+import { MarkerType } from "@xyflow/react";
 import { FlowBlock } from "./FlowBlock";
 import { FlowPathRuleBlock } from "./FlowPathRuleBlock";
 import { EndNode, generateEdge, generateNode, ReactFlowData } from "./utils";
@@ -63,7 +64,7 @@ export class FlowPathsBlock extends FlowBlock {
     const lw = 100;
     return {
       id: `${this.id}-end`,
-      data: { label: "end", nodeData: this.flowNodeData },
+      data: { label: `${this.id}-end`, nodeData: this.flowNodeData },
       parentId: this.id,
       position: {
         x: (this.w - lw) / 2,
@@ -200,6 +201,7 @@ export class FlowPathsBlock extends FlowBlock {
             sourceNode: node,
             targetNode: endNode,
             type: "endflowEdge",
+            markerEnd: MarkerType.Arrow,
           });
         });
       })(),

@@ -41,7 +41,7 @@ function LoopNode(props: WorkflowNodeProps) {
           })}
           style={{
             width: `${vw}px`,
-            height: `${vh}px`,
+            height: `${vh - 2}px`,
             left: "50%",
             transform: "translateX(-50%)",
           }}

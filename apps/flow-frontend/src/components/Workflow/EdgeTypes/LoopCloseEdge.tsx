@@ -64,11 +64,11 @@ export default function LoopCloseEdge(props: WflowEdgeProps) {
         x: targetX - targetVw / 2 + 20,
       },
       {
-        y: targetY + targetH + 15,
+        y: targetY + targetH + 20,
       },
       {
         x: targetX,
-        y: targetY + targetH + 15,
+        y: targetY + targetH + 20,
       },
     ],
   });

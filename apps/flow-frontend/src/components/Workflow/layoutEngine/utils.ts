@@ -1,4 +1,4 @@
-import { Edge, EdgeProps, Node, NodeProps } from "@xyflow/react";
+import { Edge, EdgeProps, MarkerType, Node, NodeProps } from "@xyflow/react";
 import type { FlowBlock } from "./FlowBlock";
 import type { FlowPathsBlock } from "./FlowPathsBlock";
 import { LoopNodeCode } from "./core/LoopConnector";
@@ -94,8 +94,9 @@ export function generateEdge(config: {
   };
   targetNode: WflowNode;
   type?: string;
+  markerEnd?: MarkerType;
 }): WflowEdge {
-  const { sourceNode, targetNode, type } = config;
+  const { sourceNode, targetNode, type, markerEnd } = config;
   let _type = type || "stepflowEdge";
 
   if (targetNode.data?.nodeData && isEmptyNode(targetNode.data.nodeData)) {
@@ -116,6 +117,7 @@ export function generateEdge(config: {
     style: {
       visibility: "visible",
     },
+    markerEnd: markerEnd || { type: MarkerType.ArrowClosed },
   };
 }
 
